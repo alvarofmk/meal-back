@@ -6,6 +6,7 @@ import org.hibernate.annotations.Parameter;
 
 import javax.persistence.*;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -37,7 +38,8 @@ public class Restaurante {
     private String coverImgUrl;
 
     @OneToMany(fetch = FetchType.LAZY)
-    private List<Plato> platos;
+    @Builder.Default
+    private List<Plato> platos = new ArrayList<>();
 
     private LocalTime apertura;
     private LocalTime cierre;
