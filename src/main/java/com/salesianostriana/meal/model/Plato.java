@@ -40,6 +40,16 @@ public class Plato {
     @ManyToOne(fetch = FetchType.LAZY)
     private Restaurante restaurante;
 
+    public void addRestaurante(Restaurante restaurante){
+        this.restaurante = restaurante;
+        restaurante.getPlatos().add(this);
+    }
+
+    public void removeRestaurante(){
+        restaurante.getPlatos().remove(this);
+        this.restaurante = null;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

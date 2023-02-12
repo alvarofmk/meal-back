@@ -1,9 +1,10 @@
 package com.salesianostriana.meal.controller;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import com.salesianostriana.meal.model.dto.PageDTO;
-import com.salesianostriana.meal.model.dto.restaurante.GenericRestauranteResponseDTO;
+import com.salesianostriana.meal.model.dto.restaurante.RestauranteResponseDTO;
 import com.salesianostriana.meal.model.dto.restaurante.RestauranteRequestDTO;
-import com.salesianostriana.meal.model.dto.restaurante.SingleRestauranteResponseDTO;
+import com.salesianostriana.meal.model.view.View;
 import com.salesianostriana.meal.service.RestauranteService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -21,19 +22,22 @@ public class RestauranteController {
 
     private final RestauranteService service;
     @GetMapping("/")
-    public PageDTO<GenericRestauranteResponseDTO> findAll(@PageableDefault(page = 0, size = 10) Pageable pageable){
-        PageDTO<GenericRestauranteResponseDTO> result = new PageDTO<>();
-        return result.of(service.findAll(pageable).map(GenericRestauranteResponseDTO::of));
+    @JsonView(View.RestauranteView.RestauranteGenericView.class)
+    public PageDTO<RestauranteResponseDTO> findAll(@PageableDefault(page = 0, size = 10) Pageable pageable){
+        PageDTO<RestauranteResponseDTO> result = new PageDTO<>();
+        return result.of(service.findAll(pageable).map(RestauranteResponseDTO::of));
     }
 
     @GetMapping("/{id}")
-    public SingleRestauranteResponseDTO findById(@PathVariable UUID id){
-        return SingleRestauranteResponseDTO.of(service.findById(id));
+    @JsonView(View.RestauranteView.RestauranteDetailView.class)
+    public RestauranteResponseDTO findById(@PathVariable UUID id){
+        return RestauranteResponseDTO.of(service.findById(id));
     }
 
     @PostMapping("/")
-    public SingleRestauranteResponseDTO create(@Valid @RequestBody RestauranteRequestDTO restauranteDto){
-        return SingleRestauranteResponseDTO.of(service.add(restauranteDto.toRestaurante()));
+    @JsonView(View.RestauranteView.RestauranteDetailView.class)
+    public RestauranteResponseDTO create(@Valid @RequestBody RestauranteRequestDTO restauranteDto){
+        return RestauranteResponseDTO.of(service.add(restauranteDto.toRestaurante()));
     }
 
     @DeleteMapping("/{id}")
@@ -43,8 +47,9 @@ public class RestauranteController {
     }
 
     @PutMapping("/{id}")
-    public GenericRestauranteResponseDTO edit(@PathVariable UUID id, @Valid @RequestBody RestauranteRequestDTO restauranteDto){
-        return GenericRestauranteResponseDTO.of(service.edit(id, restauranteDto));
+    @JsonView(View.RestauranteView.RestauranteDetailView.class)
+    public RestauranteResponseDTO edit(@PathVariable UUID id, @Valid @RequestBody RestauranteRequestDTO restauranteDto){
+        return RestauranteResponseDTO.of(service.edit(id, restauranteDto));
     }
 
 }

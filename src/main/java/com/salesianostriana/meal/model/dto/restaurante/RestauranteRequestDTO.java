@@ -13,14 +13,14 @@ import java.time.LocalTime;
 @Value
 public class RestauranteRequestDTO {
 
-    @NotBlank
+    @NotBlank(message = "{RestauranteRequestDTO.nombre.notBlank}")
     private String nombre;
 
-    @NotBlank
-    @Size(max = 200)
+    @NotBlank(message = "{RestauranteRequestDTO.descripcion.notBlank}")
+    @Size(max = 200, message = "{RestauranteRequestDTO.descripcion.size}")
     private String descripcion;
 
-    @URL
+    @URL(message = "{RestauranteRequestDTO.coverImgUrl}")
     private String coverImgUrl;
     private LocalTime apertura;
     private LocalTime cierre;
