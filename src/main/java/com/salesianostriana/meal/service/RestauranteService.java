@@ -1,6 +1,7 @@
 package com.salesianostriana.meal.service;
 
 import com.salesianostriana.meal.model.Restaurante;
+import com.salesianostriana.meal.model.dto.restaurante.RestauranteRequestDTO;
 import com.salesianostriana.meal.repository.RestauranteRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -32,4 +33,20 @@ public class RestauranteService {
     public Restaurante add(Restaurante restaurante){
         return repository.save(restaurante);
     }
+
+    public void deleteById(UUID id){
+        repository.deleteById(id);
+    }
+
+    public Restaurante edit(UUID id, RestauranteRequestDTO restauranteRequestDTO){
+        return repository.findById(id).map(r -> {
+            r.setApertura(restauranteRequestDTO.getApertura());
+            r.setCierre(restauranteRequestDTO.getCierre());
+            r.setNombre(restauranteRequestDTO.getNombre());
+            r.setDescripcion(restauranteRequestDTO.getDescripcion());
+            r.setCoverImgUrl(restauranteRequestDTO.getCoverImgUrl());
+            return repository.save(r);
+        }).orElseThrow(() -> new EntityNotFoundException());
+    }
+
 }

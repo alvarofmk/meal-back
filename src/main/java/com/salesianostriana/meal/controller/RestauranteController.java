@@ -8,8 +8,10 @@ import com.salesianostriana.meal.service.RestauranteService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.UUID;
 
 @RestController
@@ -30,8 +32,19 @@ public class RestauranteController {
     }
 
     @PostMapping("/")
-    public SingleRestauranteResponseDTO create(@RequestBody RestauranteRequestDTO restauranteDto){
+    public SingleRestauranteResponseDTO create(@Valid @RequestBody RestauranteRequestDTO restauranteDto){
         return SingleRestauranteResponseDTO.of(service.add(restauranteDto.toRestaurante()));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> delete(@PathVariable UUID id){
+        service.deleteById(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/{id}")
+    public GenericRestauranteResponseDTO edit(@PathVariable UUID id, @Valid @RequestBody RestauranteRequestDTO restauranteDto){
+        return GenericRestauranteResponseDTO.of(service.edit(id, restauranteDto));
     }
 
 }

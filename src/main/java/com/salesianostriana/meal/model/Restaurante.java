@@ -38,7 +38,7 @@ public class Restaurante {
     private String descripcion;
     private String coverImgUrl;
 
-    @OneToMany(fetch = FetchType.LAZY)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "restaurante")
     @Builder.Default
     private List<Plato> platos = new ArrayList<>();
 
