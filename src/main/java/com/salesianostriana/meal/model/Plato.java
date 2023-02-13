@@ -44,7 +44,6 @@ public class Plato {
     @Convert(converter = IngredienteConverter.class)
     private List<String> ingredientes = new ArrayList<>();
     private boolean sinGluten;
-
     @ManyToOne
     private Restaurante restaurante;
 
