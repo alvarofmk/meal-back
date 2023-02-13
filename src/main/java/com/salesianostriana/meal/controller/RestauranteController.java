@@ -31,7 +31,7 @@ public class RestauranteController {
     @GetMapping("/{id}")
     @JsonView(View.RestauranteView.RestauranteDetailView.class)
     public RestauranteResponseDTO findById(@PathVariable UUID id){
-        return RestauranteResponseDTO.of(service.findById(id));
+        return RestauranteResponseDTO.of(service.findWithMenu(id));
     }
 
     @PostMapping("/")

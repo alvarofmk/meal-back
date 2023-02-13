@@ -10,16 +10,16 @@ import lombok.Value;
 @Value
 public class PlatoResponseDTO {
 
-    @JsonView({View.PlatoView.PlatoGenericView.class, View.PlatoView.PlatoDetailView.class})
+    @JsonView({View.PlatoView.PlatoGenericView.class, View.PlatoView.PlatoDetailView.class, View.RestauranteView.RestauranteDetailView.class})
     private String nombre;
 
-    @JsonView({View.PlatoView.PlatoDetailView.class})
+    @JsonView({View.PlatoView.PlatoDetailView.class, View.RestauranteView.RestauranteDetailView.class})
     private String descripcion;
 
-    @JsonView({View.PlatoView.PlatoGenericView.class, View.PlatoView.PlatoDetailView.class})
+    @JsonView({View.PlatoView.PlatoGenericView.class, View.PlatoView.PlatoDetailView.class, View.RestauranteView.RestauranteDetailView.class})
     private double precio;
 
-    @JsonView({View.PlatoView.PlatoGenericView.class, View.PlatoView.PlatoDetailView.class})
+    @JsonView({View.PlatoView.PlatoGenericView.class, View.PlatoView.PlatoDetailView.class, View.RestauranteView.RestauranteDetailView.class})
     private String imgUrl;
 
     public static PlatoResponseDTO of(Plato plato){

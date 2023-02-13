@@ -9,6 +9,7 @@ import com.salesianostriana.meal.service.PlatoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -47,7 +48,7 @@ public class PlatoController {
     public PlatoResponseDTO create(@Valid @RequestBody PlatoRequestDTO PlatoDto){
         return PlatoResponseDTO.of(service.add(PlatoDto.toPlato()));
     }
-/*
+
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable UUID id){
         service.deleteById(id);
@@ -57,6 +58,6 @@ public class PlatoController {
     @PutMapping("/{id}")
     public PlatoResponseDTO edit(@PathVariable UUID id, @Valid @RequestBody PlatoRequestDTO PlatoDto){
         return PlatoResponseDTO.of(service.edit(id, PlatoDto));
-    }*/
+    }
     
 }

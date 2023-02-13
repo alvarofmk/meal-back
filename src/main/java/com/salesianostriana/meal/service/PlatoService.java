@@ -1,6 +1,7 @@
 package com.salesianostriana.meal.service;
 
 import com.salesianostriana.meal.model.Plato;
+import com.salesianostriana.meal.model.dto.plato.PlatoRequestDTO;
 import com.salesianostriana.meal.repository.PlatoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -42,6 +43,16 @@ public class PlatoService {
             throw new EntityNotFoundException();
         }
         return result;
+    }
+
+    public Plato edit(UUID id, PlatoRequestDTO platoRequestDTO){
+        return repository.findById(id).map(p -> {
+            p.setDescripcion(platoRequestDTO.getDescripcion());
+            p.setPrecio(platoRequestDTO.getPrecio());
+            p.setNombre(platoRequestDTO.getNombre());
+            p.setImgUrl(platoRequestDTO.getImgUrl());
+            return repository.save(p);
+        }).orElseThrow(() -> new EntityNotFoundException());
     }
     
 

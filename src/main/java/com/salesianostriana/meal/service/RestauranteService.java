@@ -49,4 +49,7 @@ public class RestauranteService {
         }).orElseThrow(() -> new EntityNotFoundException());
     }
 
+    public Restaurante findWithMenu(UUID id) {
+        return repository.findOneWithMenu(id).orElseThrow(() -> new EntityNotFoundException());
+    }
 }

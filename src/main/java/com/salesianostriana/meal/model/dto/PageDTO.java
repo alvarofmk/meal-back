@@ -1,5 +1,7 @@
 package com.salesianostriana.meal.model.dto;
 
+import com.fasterxml.jackson.annotation.JsonView;
+import com.salesianostriana.meal.model.view.View;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,6 +12,8 @@ import java.util.List;
 
 @Getter
 @NoArgsConstructor
+@JsonView({View.RestauranteView.RestauranteDetailView.class, View.RestauranteView.RestauranteGenericView.class,
+View.PlatoView.PlatoDetailView.class, View.PlatoView.PlatoGenericView.class})
 public class PageDTO<T> {
 
     private List<T> contenido;

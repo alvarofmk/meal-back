@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.salesianostriana.meal.model.Plato;
 import com.salesianostriana.meal.model.Restaurante;
+import com.salesianostriana.meal.model.dto.plato.PlatoResponseDTO;
 import com.salesianostriana.meal.model.view.View;
 import lombok.Builder;
 import lombok.Value;
@@ -30,7 +31,7 @@ public class RestauranteResponseDTO {
 
     @JsonView({View.RestauranteView.RestauranteDetailView.class})
     @JsonInclude(value = JsonInclude.Include.NON_EMPTY)
-    private List<Plato> platos;
+    private List<PlatoResponseDTO> platos;
 
     @JsonView({View.RestauranteView.RestauranteGenericView.class, View.RestauranteView.RestauranteDetailView.class})
     private LocalTime apertura;
@@ -46,7 +47,7 @@ public class RestauranteResponseDTO {
                 .apertura(restaurante.getApertura())
                 .cierre(restaurante.getCierre())
                 .descripcion(restaurante.getDescripcion())
-                .platos(restaurante.getPlatos())
+                .platos(restaurante.getPlatos().stream().map(PlatoResponseDTO::of).toList())
                 .build();
     }
 
