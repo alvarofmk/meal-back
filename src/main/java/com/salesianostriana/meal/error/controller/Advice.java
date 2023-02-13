@@ -1,4 +1,5 @@
 package com.salesianostriana.meal.error.controller;
+import com.salesianostriana.meal.error.exception.InvalidSearchException;
 import com.salesianostriana.meal.error.model.Error;
 import com.salesianostriana.meal.error.model.SubError;
 import org.springframework.http.HttpHeaders;
@@ -15,6 +16,16 @@ import javax.persistence.EntityNotFoundException;
 
 @RestControllerAdvice
 public class Advice extends ResponseEntityExceptionHandler {
+
+    @ExceptionHandler(InvalidSearchException.class)
+    public ResponseEntity<?> handleInvalidSearch(InvalidSearchException exception, WebRequest request){
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Error.builder()
+                .status(HttpStatus.BAD_REQUEST)
+                .code(HttpStatus.BAD_REQUEST.value())
+                .path(((ServletWebRequest) request).getRequest().getRequestURI())
+                .message(exception.getMessage())
+                .build());
+    }
 
     @ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity<?> handleNotFound(EntityNotFoundException exception, WebRequest request){

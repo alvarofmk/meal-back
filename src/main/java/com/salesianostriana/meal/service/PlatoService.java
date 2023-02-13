@@ -3,12 +3,17 @@ package com.salesianostriana.meal.service;
 import com.salesianostriana.meal.model.Plato;
 import com.salesianostriana.meal.model.dto.plato.PlatoRequestDTO;
 import com.salesianostriana.meal.repository.PlatoRepository;
+import com.salesianostriana.meal.search.Criteria;
+import com.salesianostriana.meal.search.SpecBuilder;
+import com.salesianostriana.meal.search.Utilities;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -54,6 +59,10 @@ public class PlatoService {
             return repository.save(p);
         }).orElseThrow(() -> new EntityNotFoundException());
     }
-    
 
+    public Page<Plato> search(List<Criteria> criterios, Pageable pageable){
+        SpecBuilder<Plato> builder = new SpecBuilder<>(criterios, Plato.class);
+        Specification<Plato> spec = builder.build();
+        return repository.findAll(spec, pageable);
+    }
 }

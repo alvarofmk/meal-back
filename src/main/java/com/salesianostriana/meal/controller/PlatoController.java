@@ -1,10 +1,14 @@
 package com.salesianostriana.meal.controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import com.salesianostriana.meal.error.exception.InvalidSearchException;
+import com.salesianostriana.meal.model.Plato;
 import com.salesianostriana.meal.model.dto.PageDTO;
 import com.salesianostriana.meal.model.dto.plato.PlatoResponseDTO;
 import com.salesianostriana.meal.model.dto.plato.PlatoRequestDTO;
 import com.salesianostriana.meal.model.view.View;
+import com.salesianostriana.meal.search.Criteria;
+import com.salesianostriana.meal.search.Utilities;
 import com.salesianostriana.meal.service.PlatoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -12,7 +16,10 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.EntityNotFoundException;
 import javax.validation.Valid;
+import java.security.InvalidAlgorithmParameterException;
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -25,9 +32,13 @@ public class PlatoController {
 
     @GetMapping("/")
     @JsonView(View.PlatoView.PlatoGenericView.class)
-    public PageDTO<PlatoResponseDTO> findAll(@PageableDefault(page = 0, size = 10) Pageable pageable){
+    public PageDTO<PlatoResponseDTO> search(@RequestParam(value = "search", defaultValue = "")String search,
+                                             @PageableDefault(page = 0, size = 10) Pageable pageable){
+        List<Criteria> criterios = Utilities.extractCriteria(search);
+        if (!criterios.stream().allMatch(c -> Utilities.checkParam(c.getKey(), Plato.class)))
+            throw new InvalidSearchException();
         PageDTO<PlatoResponseDTO> result = new PageDTO<>();
-        return result.of(service.findAll(pageable).map(PlatoResponseDTO::of));
+        return result.of(service.search(criterios, pageable).map(PlatoResponseDTO::of));
     }
 
     @JsonView(View.PlatoView.PlatoDetailView.class)
