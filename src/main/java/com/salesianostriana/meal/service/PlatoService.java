@@ -4,6 +4,7 @@ import com.salesianostriana.meal.model.Plato;
 import com.salesianostriana.meal.model.Valoracion;
 import com.salesianostriana.meal.model.dto.plato.PlatoRequestDTO;
 import com.salesianostriana.meal.model.dto.plato.RateRequestDTO;
+import com.salesianostriana.meal.model.key.ValoracionPK;
 import com.salesianostriana.meal.repository.PlatoRepository;
 import com.salesianostriana.meal.repository.ValoracionRepository;
 import com.salesianostriana.meal.search.Criteria;
@@ -73,11 +74,13 @@ public class PlatoService {
 
     public Plato rate(UUID id, RateRequestDTO rateRequestDTO, User loggedUser) {
         return repository.findFirstById(id).map(p -> {
+            ValoracionPK pk = new ValoracionPK(loggedUser.getId(), p.getId());
             Valoracion nueva = Valoracion.builder()
+                    .pk(pk)
                     .nota(rateRequestDTO.getNota())
                     .comentario(rateRequestDTO.getComentario())
+                    .usuario(loggedUser)
                     .build();
-            nueva.addUser(loggedUser);
             nueva.addPlato(p);
             valoracionRepository.save(nueva);
             p.setValoracionMedia(p.getValoraciones().stream().mapToDouble(v -> v.getNota()).sum() / p.getValoraciones().size());
