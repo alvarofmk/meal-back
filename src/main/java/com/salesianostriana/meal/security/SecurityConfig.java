@@ -75,6 +75,7 @@ public class SecurityConfig {
                                 .antMatchers(HttpMethod.DELETE,"/restaurante/**").hasAnyRole("ADMIN","OWNER")
                                 .antMatchers(HttpMethod.POST,"/restaurante/**").hasAnyRole("ADMIN","OWNER")
                                 .antMatchers(HttpMethod.PUT,"/restaurante/**").hasAnyRole("ADMIN","OWNER")
+                                .antMatchers("/plato/rate/**").hasAnyRole("ADMIN","OWNER", "USER")
                                 .antMatchers(HttpMethod.DELETE,"/plato/**").hasAnyRole("ADMIN","OWNER")
                                 .antMatchers(HttpMethod.POST,"/plato/**").hasAnyRole("ADMIN","OWNER")
                                 .antMatchers(HttpMethod.PUT,"/plato/**").hasAnyRole("ADMIN","OWNER")
@@ -90,7 +91,7 @@ public class SecurityConfig {
 
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
-        return (web -> web.ignoring().antMatchers("/h2-console/**", "/auth/register", "/auth/login", "/refreshtoken"));
+        return (web -> web.ignoring().antMatchers("/h2-console/**", "/auth/register", "/auth/login"));
     }
 
 

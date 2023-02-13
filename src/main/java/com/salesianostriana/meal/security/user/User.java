@@ -1,6 +1,9 @@
 package com.salesianostriana.meal.security.user;
 
 import com.salesianostriana.meal.model.Plato;
+import com.salesianostriana.meal.model.Restaurante;
+import com.salesianostriana.meal.model.Valoracion;
+import com.salesianostriana.meal.model.converter.StringListConverter;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.data.annotation.CreatedDate;
@@ -45,9 +48,13 @@ public class User implements UserDetails {
     private String password;
     private String avatar;
 
-    @ManyToMany
+    @OneToMany(mappedBy = "usuario", fetch = FetchType.LAZY)
     @Builder.Default
-    private List<Plato> favoritos = new ArrayList<>();
+    private List<Valoracion> valoraciones = new ArrayList<>();
+
+    @OneToMany(mappedBy = "restaurantAdmin", fetch = FetchType.LAZY)
+    @Builder.Default
+    private List<Restaurante> administra = new ArrayList<>();
 
     @Builder.Default
     private boolean accountNonExpired = true;
@@ -58,6 +65,8 @@ public class User implements UserDetails {
     @Builder.Default
     private boolean enabled = true;
 
+    // TODO Adaptar a converter
+    //@Convert(converter = StringListConverter.class)
     @ElementCollection(fetch = FetchType.EAGER)
     private Set<Roles> roles;
 

@@ -9,10 +9,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.EnumSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -21,7 +18,7 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
 
-    public User createUser(CreateUserRequest createUserRequest, EnumSet<Roles> roles) {
+    public User createUser(CreateUserRequest createUserRequest, Set<Roles> roles) {
         User user =  User.builder()
                 .nombre(createUserRequest.getUsername())
                 .username(createUserRequest.getUsername())
@@ -37,15 +34,15 @@ public class UserService {
     }
 
     public User createUserWithUserRole(CreateUserRequest createUserRequest) {
-        return createUser(createUserRequest, EnumSet.of(Roles.USER));
+        return createUser(createUserRequest, Set.of(Roles.USER));
     }
 
     public User createUserWithAdminRole(CreateUserRequest createUserRequest) {
-        return createUser(createUserRequest, EnumSet.of(Roles.ADMIN));
+        return createUser(createUserRequest, Set.of(Roles.ADMIN));
     }
 
     public User createUserWithOwnerRole(CreateUserRequest createUserRequest) {
-        return createUser(createUserRequest, EnumSet.of(Roles.ADMIN));
+        return createUser(createUserRequest, Set.of(Roles.OWNER));
     }
 
     public List<User> findAll() {

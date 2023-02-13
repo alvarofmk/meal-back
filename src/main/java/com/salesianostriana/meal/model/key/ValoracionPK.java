@@ -5,9 +5,9 @@ import java.io.Serializable;
 import java.util.UUID;
 
 @Embeddable
-public class LineaVentaPK implements Serializable {
+public class ValoracionPK implements Serializable {
 
-    private UUID ventaId;
-    private UUID platoId;
+    public UUID userId;
+    public UUID platoId;
 
 }

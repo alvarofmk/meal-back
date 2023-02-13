@@ -1,11 +1,15 @@
 package com.salesianostriana.meal.service;
 
 import com.salesianostriana.meal.model.Plato;
+import com.salesianostriana.meal.model.Valoracion;
 import com.salesianostriana.meal.model.dto.plato.PlatoRequestDTO;
+import com.salesianostriana.meal.model.dto.plato.RateRequestDTO;
 import com.salesianostriana.meal.repository.PlatoRepository;
+import com.salesianostriana.meal.repository.ValoracionRepository;
 import com.salesianostriana.meal.search.Criteria;
 import com.salesianostriana.meal.search.SpecBuilder;
 import com.salesianostriana.meal.search.Utilities;
+import com.salesianostriana.meal.security.user.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -21,6 +25,7 @@ import java.util.UUID;
 public class PlatoService {
 
     private final PlatoRepository repository;
+    private final ValoracionRepository valoracionRepository;
 
     public Page<Plato> findAll(Pageable pageable){
         Page<Plato> result = repository.findAll(pageable);
@@ -64,5 +69,19 @@ public class PlatoService {
         SpecBuilder<Plato> builder = new SpecBuilder<>(criterios, Plato.class);
         Specification<Plato> spec = builder.build();
         return repository.findAll(spec, pageable);
+    }
+
+    public Plato rate(UUID id, RateRequestDTO rateRequestDTO, User loggedUser) {
+        return repository.findFirstById(id).map(p -> {
+            Valoracion nueva = Valoracion.builder()
+                    .nota(rateRequestDTO.getNota())
+                    .comentario(rateRequestDTO.getComentario())
+                    .build();
+            nueva.addUser(loggedUser);
+            nueva.addPlato(p);
+            valoracionRepository.save(nueva);
+            p.setValoracionMedia(p.getValoraciones().stream().mapToDouble(v -> v.getNota()).sum() / p.getValoraciones().size());
+            return repository.save(p);
+        }).orElseThrow(() -> new EntityNotFoundException());
     }
 }

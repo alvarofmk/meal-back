@@ -1,5 +1,6 @@
 package com.salesianostriana.meal.model;
 
+import com.salesianostriana.meal.security.user.User;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
@@ -45,6 +46,9 @@ public class Restaurante {
 
     private LocalTime apertura;
     private LocalTime cierre;
+
+    @ManyToOne
+    private User restaurantAdmin;
 
     @Override
     public boolean equals(Object o) {

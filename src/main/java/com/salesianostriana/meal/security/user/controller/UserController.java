@@ -104,5 +104,10 @@ public class UserController {
         return null;
     }
 
+    @GetMapping("/me")
+    public ResponseEntity<UserResponse> profile(@AuthenticationPrincipal User loggedUser) {
+        return null;
+    }
+
 
 }

@@ -1,9 +1,8 @@
 package com.salesianostriana.meal.model;
 
-import com.salesianostriana.meal.model.converter.IngredienteConverter;
+import com.salesianostriana.meal.model.converter.StringListConverter;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.ManyToAny;
 import org.hibernate.annotations.Parameter;
 
 import javax.persistence.*;
@@ -18,6 +17,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @Builder
+@NamedEntityGraph(name = "plato-con-valoraciones", attributeNodes = @NamedAttributeNode(value = "valoraciones"))
 public class Plato {
 
     @Id
@@ -41,9 +41,14 @@ public class Plato {
     private String imgUrl;
 
     @Builder.Default
-    @Convert(converter = IngredienteConverter.class)
+    @Convert(converter = StringListConverter.class)
     private List<String> ingredientes = new ArrayList<>();
     private boolean sinGluten;
+    private double valoracionMedia;
+
+    @OneToMany(mappedBy = "plato", fetch = FetchType.LAZY)
+    @Builder.Default
+    private List<Valoracion> valoraciones = new ArrayList<>();
     @ManyToOne
     private Restaurante restaurante;
 

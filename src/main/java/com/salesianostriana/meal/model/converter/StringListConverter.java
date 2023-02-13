@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class IngredienteConverter implements AttributeConverter<List<String>, String> {
+public class StringListConverter implements AttributeConverter<List<String>, String> {
 
     private static final String SEPARATOR = ", ";
 
