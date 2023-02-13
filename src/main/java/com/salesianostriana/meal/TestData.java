@@ -40,33 +40,52 @@ public class TestData {
                 .precio(7)
                 .descripcion("Yo que se")
                 .imgUrl("Una imagen")
+                .ingredientes(List.of("Tomate", "Lechuga", "Ternera", "Queso", "Pan"))
+                .sinGluten(false)
+                .build();
+        Plato p1b = Plato.builder()
+                .nombre("Bigmac sin gluten")
+                .precio(7.5)
+                .descripcion("Yo que se")
+                .imgUrl("Una imagen")
+                .ingredientes(List.of("Tomate", "Lechuga", "Ternera", "Queso", "Pan"))
+                .sinGluten(true)
                 .build();
         Plato p2 = Plato.builder()
                 .nombre("Patatas deluxe")
                 .precio(2)
                 .descripcion("Las mejores patatas")
                 .imgUrl("Una imagen")
+                .ingredientes(List.of("Patatas"))
+                .sinGluten(false)
                 .build();
         Plato p3 = Plato.builder()
                 .nombre("CBO")
                 .precio(6.50)
                 .descripcion("El cielo en la tierra")
                 .imgUrl("Una imagen")
+                .ingredientes(List.of("Pollo", "Queso", "Pan", "Bacon", "Salsa barbacoa"))
+                .sinGluten(false)
                 .build();
         Plato p4 = Plato.builder()
                 .nombre("Cremozza")
                 .precio(9)
                 .descripcion("Lo unico bueno")
                 .imgUrl("Una imagen")
+                .ingredientes(List.of("Pollo", "Queso", "Cebolla", "Salsa carbonara", "Champiñones", "Tomate"))
+                .sinGluten(false)
                 .build();
         Plato p5 = Plato.builder()
                 .nombre("Hawaiiana")
                 .precio(9)
                 .descripcion("Ew")
                 .imgUrl("Una imagen")
+                .ingredientes(List.of("Pollo", "Queso", "Cebolla", "Piña", "Tomate"))
+                .sinGluten(true)
                 .build();
 
         p1.addRestaurante(r1);
+        p1b.addRestaurante(r1);
         p2.addRestaurante(r1);
         p3.addRestaurante(r1);
         p4.addRestaurante(r2);
@@ -75,6 +94,7 @@ public class TestData {
         restauranteRepository.save(r1);
         restauranteRepository.save(r2);
         platoRepository.save(p1);
+        platoRepository.save(p1b);
         platoRepository.save(p2);
         platoRepository.save(p3);
         platoRepository.save(p4);

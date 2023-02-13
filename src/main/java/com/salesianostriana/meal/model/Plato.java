@@ -1,11 +1,14 @@
 package com.salesianostriana.meal.model;
 
+import com.salesianostriana.meal.model.converter.IngredienteConverter;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.ManyToAny;
 import org.hibernate.annotations.Parameter;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -36,6 +39,11 @@ public class Plato {
     private String descripcion;
     private double precio;
     private String imgUrl;
+
+    @Builder.Default
+    @Convert(converter = IngredienteConverter.class)
+    private List<String> ingredientes = new ArrayList<>();
+    private boolean sinGluten;
 
     @ManyToOne
     private Restaurante restaurante;
