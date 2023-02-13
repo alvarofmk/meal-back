@@ -1,11 +1,13 @@
 package com.salesianostriana.meal.model;
 
+import com.fasterxml.jackson.databind.ser.Serializers;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.ManyToAny;
-import org.hibernate.annotations.Parameter;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -15,7 +17,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @Builder
-public class Plato {
+public class Venta {
 
     @Id
     @GeneratedValue(generator = "UUID")
@@ -23,7 +25,7 @@ public class Plato {
             name = "UUID",
             strategy = "org.hibernate.id.UUIDGenerator",
             parameters = {
-                    @Parameter(
+                    @org.hibernate.annotations.Parameter(
                             name = "uuid_gen_strategy_class",
                             value = "org.hibernate.id.uuid.CustomVersionOneStrategy"
                     )
@@ -32,30 +34,32 @@ public class Plato {
     @Column(columnDefinition = "uuid")
     private UUID id;
 
-    private String nombre;
-    private String descripcion;
-    private double precio;
-    private String imgUrl;
+    @Builder.Default
+    private LocalDateTime fecha = LocalDateTime.now();
 
     @ManyToOne
-    private Restaurante restaurante;
+    private BaseUser baseUser;
 
-    public void addRestaurante(Restaurante restaurante){
-        this.restaurante = restaurante;
-        restaurante.getPlatos().add(this);
+    @OneToMany(mappedBy = "venta", orphanRemoval = true, cascade = CascadeType.ALL)
+    private List<LineaVenta> detalle = new ArrayList<>();
+    private double total;
+
+    public void addLinea(LineaVenta linea){
+        detalle.add(linea);
+        linea.setVenta(this);
     }
 
-    public void removeRestaurante(){
-        restaurante.getPlatos().remove(this);
-        this.restaurante = null;
+    public void removeLinea(LineaVenta lineaVenta){
+        lineaVenta.setVenta(null);
+        detalle.remove(lineaVenta);
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Plato plato = (Plato) o;
-        return id.equals(plato.id);
+        Venta venta = (Venta) o;
+        return id.equals(venta.id);
     }
 
     @Override
