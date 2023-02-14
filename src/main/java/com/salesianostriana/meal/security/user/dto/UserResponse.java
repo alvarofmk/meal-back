@@ -26,7 +26,6 @@ public class UserResponse {
         return UserResponse.builder()
                 .id(user.getId().toString())
                 .username(user.getUsername())
-                .avatar(user.getAvatar())
                 .nombre(user.getNombre())
                 .createdAt(user.getCreatedAt())
                 .email(user.getEmail())

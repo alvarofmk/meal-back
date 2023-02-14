@@ -25,7 +25,6 @@ public class UserService {
                 .nombre(createUserRequest.getUsername())
                 .username(createUserRequest.getUsername())
                 .password(passwordEncoder.encode(createUserRequest.getPassword()))
-                .avatar(createUserRequest.getAvatar())
                 .nombre(createUserRequest.getNombre())
                 .email(createUserRequest.getEmail())
                 .roles(roles)
@@ -58,7 +57,6 @@ public class UserService {
     public Optional<User> edit(User user) {
         return userRepository.findById(user.getId())
                 .map(u -> {
-                    u.setAvatar(user.getAvatar());
                     u.setEmail(user.getEmail());
                     return userRepository.save(u);
                 }).or(() -> Optional.empty());
