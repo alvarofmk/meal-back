@@ -3,13 +3,15 @@ package com.salesianostriana.meal.service;
 import com.salesianostriana.meal.model.Restaurante;
 import com.salesianostriana.meal.model.dto.restaurante.RestauranteRequestDTO;
 import com.salesianostriana.meal.repository.RestauranteRepository;
+import com.salesianostriana.meal.security.user.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
-import java.util.List;
+import javax.swing.text.html.Option;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -30,11 +32,19 @@ public class RestauranteService {
         return repository.findById(id).orElseThrow(() ->new EntityNotFoundException());
     }
 
-    public Restaurante add(Restaurante restaurante){
+    public Restaurante add(Restaurante restaurante, User loggedUser){
+        restaurante.setRestaurantAdmin(loggedUser);
         return repository.save(restaurante);
     }
 
-    public void deleteById(UUID id){
+    public void deleteById(UUID id, User loggedUser){
+        Optional<Restaurante> restaurante = repository.findById(id);
+        if(restaurante.isEmpty()) {
+            throw new EntityNotFoundException();
+        }else if(!restaurante.get().getRestaurantAdmin().equals(loggedUser)){
+
+        }
+
         repository.deleteById(id);
     }
 

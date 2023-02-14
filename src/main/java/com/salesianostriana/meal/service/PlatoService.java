@@ -19,6 +19,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -46,8 +47,11 @@ public class PlatoService {
         return repository.save(plato);
     }
 
+    @Transactional
     public void deleteById(UUID id){
-        repository.deleteById(id);
+        if(repository.findById(id).isPresent())
+            repository.deleteRatings(id);
+            repository.deleteById(id);
     }
 
     public Page<Plato> findByRestaurant(UUID id, Pageable pageable){

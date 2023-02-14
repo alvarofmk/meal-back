@@ -5,11 +5,13 @@ import com.salesianostriana.meal.model.dto.PageDTO;
 import com.salesianostriana.meal.model.dto.restaurante.RestauranteResponseDTO;
 import com.salesianostriana.meal.model.dto.restaurante.RestauranteRequestDTO;
 import com.salesianostriana.meal.model.view.View;
+import com.salesianostriana.meal.security.user.User;
 import com.salesianostriana.meal.service.RestauranteService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -36,13 +38,13 @@ public class RestauranteController {
 
     @PostMapping("/")
     @JsonView(View.RestauranteView.RestauranteDetailView.class)
-    public RestauranteResponseDTO create(@Valid @RequestBody RestauranteRequestDTO restauranteDto){
-        return RestauranteResponseDTO.of(service.add(restauranteDto.toRestaurante()));
+    public RestauranteResponseDTO create(@AuthenticationPrincipal User loggedUser, @Valid @RequestBody RestauranteRequestDTO restauranteDto){
+        return RestauranteResponseDTO.of(service.add(restauranteDto.toRestaurante(), loggedUser));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> delete(@PathVariable UUID id){
-        service.deleteById(id);
+    public ResponseEntity<?> delete(@AuthenticationPrincipal User loggedUser, @PathVariable UUID id){
+        service.deleteById(id, loggedUser);
         return ResponseEntity.noContent().build();
     }
 

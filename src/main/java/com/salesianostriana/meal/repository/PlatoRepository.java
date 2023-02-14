@@ -3,10 +3,7 @@ package com.salesianostriana.meal.repository;
 import com.salesianostriana.meal.model.Plato;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.EntityGraph;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
-import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.jpa.repository.*;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
@@ -20,5 +17,9 @@ public interface PlatoRepository extends JpaRepository<Plato, UUID>, JpaSpecific
 
     @EntityGraph("plato-con-valoraciones")
     public Optional<Plato> findFirstById(UUID id);
+
+    @Modifying
+    @Query("DELETE FROM Valoracion v WHERE v.plato.id = :id")
+    public void deleteRatings(UUID id);
 
 }
