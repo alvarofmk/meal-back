@@ -54,7 +54,7 @@ public class PlatoService {
             repository.deleteById(id);
     }
 
-    public Page<Plato> findByRestaurant(UUID id, Pageable pageable){
+    public Page<Plato> searchByRestaurant(UUID id, Pageable pageable){
         Page<Plato> result = repository.findByRestaurant(id ,pageable);
         if(result.getTotalElements() == 0){
             throw new EntityNotFoundException();

@@ -54,7 +54,7 @@ public class PlatoController {
     @GetMapping("/restaurante/{id}")
     public PageDTO<PlatoResponseDTO> findByRestaurant(@PageableDefault(page = 0, size = 10) Pageable pageable, @PathVariable UUID id){
         PageDTO<PlatoResponseDTO> result = new PageDTO<>();
-        return result.of(service.findByRestaurant(id, pageable).map(PlatoResponseDTO::of));
+        return result.of(service.searchByRestaurant(id, pageable).map(PlatoResponseDTO::of));
     }
 
     @JsonView(View.PlatoView.PlatoDetailView.class)
