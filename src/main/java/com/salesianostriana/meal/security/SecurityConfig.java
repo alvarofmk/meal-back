@@ -80,6 +80,7 @@ public class SecurityConfig {
                                 .antMatchers(HttpMethod.POST,"/plato/**").hasAnyRole("ADMIN","OWNER")
                                 .antMatchers(HttpMethod.PUT,"/plato/**").hasAnyRole("ADMIN","OWNER")
                                 .antMatchers("/auth/register/admin").hasRole("ADMIN")
+                                .antMatchers("/me/**").authenticated()
                                 .anyRequest().permitAll();
 
         http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);

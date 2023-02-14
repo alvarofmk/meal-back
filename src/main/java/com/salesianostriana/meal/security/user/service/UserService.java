@@ -1,5 +1,6 @@
 package com.salesianostriana.meal.security.user.service;
 
+import com.salesianostriana.meal.error.exception.InvalidPasswordException;
 import com.salesianostriana.meal.security.user.User;
 import com.salesianostriana.meal.security.user.Roles;
 import com.salesianostriana.meal.security.user.dto.CreateUserRequest;
@@ -8,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -66,12 +68,14 @@ public class UserService {
         return userRepository.findFirstByUsername(username);
     }
 
-    public Optional<User> editPassword(UUID userId, String newPassword) {
-        return userRepository.findById(userId)
+    public User editPassword(User user, String newPassword) {
+        if(!passwordMatch(user, newPassword))
+            throw new InvalidPasswordException();
+        return userRepository.findById(user.getId())
                 .map(u -> {
                     u.setPassword(passwordEncoder.encode(newPassword));
                     return userRepository.save(u);
-                }).or(() -> Optional.empty());
+                }).orElseThrow(() -> new EntityNotFoundException());
     }
 
     public void delete(User user) {

@@ -1,5 +1,6 @@
 package com.salesianostriana.meal.error.controller;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.salesianostriana.meal.error.exception.InvalidPasswordException;
 import com.salesianostriana.meal.error.exception.InvalidSearchException;
 import com.salesianostriana.meal.error.model.Error;
 import com.salesianostriana.meal.error.model.SubError;
@@ -28,7 +29,7 @@ import java.time.LocalDateTime;
 @RestControllerAdvice
 public class Advice extends ResponseEntityExceptionHandler {
 
-    @ExceptionHandler(InvalidSearchException.class)
+    @ExceptionHandler({InvalidSearchException.class, InvalidPasswordException.class})
     public ResponseEntity<?> handleInvalidSearch(InvalidSearchException exception, WebRequest request){
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Error.builder()
                 .status(HttpStatus.BAD_REQUEST)

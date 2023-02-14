@@ -94,7 +94,6 @@ public class JwtProvider {
             log.info("Error con el token: " + ex.getMessage());
             throw new JwtTokenException(ex.getMessage());
         }
-        //return false;
 
     }
 
