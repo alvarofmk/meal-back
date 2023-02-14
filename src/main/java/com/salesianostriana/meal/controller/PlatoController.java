@@ -44,12 +44,6 @@ public class PlatoController {
         return result.of(service.search(criterios, pageable).map(PlatoResponseDTO::of));
     }
 
-    @JsonView(View.PlatoView.PlatoDetailView.class)
-    @GetMapping("/{id}")
-    public PlatoResponseDTO findById(@PathVariable UUID id){
-        return PlatoResponseDTO.of(service.findById(id));
-    }
-
     @JsonView(View.PlatoView.PlatoGenericView.class)
     @GetMapping("/restaurante/{id}")
     public PageDTO<PlatoResponseDTO> findByRestaurant(@PageableDefault(page = 0, size = 10) Pageable pageable, @PathVariable UUID id){
@@ -58,20 +52,26 @@ public class PlatoController {
     }
 
     @JsonView(View.PlatoView.PlatoDetailView.class)
-    @PostMapping("/")
-    public PlatoResponseDTO create(@Valid @RequestBody PlatoRequestDTO PlatoDto){
-        return PlatoResponseDTO.of(service.add(PlatoDto.toPlato()));
+    @GetMapping("/{id}")
+    public PlatoResponseDTO findById(@PathVariable UUID id){
+        return PlatoResponseDTO.of(service.findById(id));
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> delete(@PathVariable UUID id){
-        service.deleteById(id);
-        return ResponseEntity.noContent().build();
+    @JsonView(View.PlatoView.PlatoDetailView.class)
+    @PostMapping("/{restaurantId}")
+    public PlatoResponseDTO create(@AuthenticationPrincipal User loggedUser, @Valid @RequestBody PlatoRequestDTO PlatoDto, @PathVariable UUID restaurantId){
+        return PlatoResponseDTO.of(service.add(PlatoDto.toPlato(), restaurantId, loggedUser));
     }
 
     @PutMapping("/{id}")
-    public PlatoResponseDTO edit(@PathVariable UUID id, @Valid @RequestBody PlatoRequestDTO PlatoDto){
-        return PlatoResponseDTO.of(service.edit(id, PlatoDto));
+    public PlatoResponseDTO edit(@AuthenticationPrincipal User loggedUser, @PathVariable UUID id, @Valid @RequestBody PlatoRequestDTO PlatoDto){
+        return PlatoResponseDTO.of(service.edit(id, PlatoDto, loggedUser));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> delete(@AuthenticationPrincipal User loggedUser, @PathVariable UUID id){
+        service.deleteById(id, loggedUser);
+        return ResponseEntity.noContent().build();
     }
 
 

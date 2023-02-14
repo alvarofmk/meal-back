@@ -15,6 +15,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 @AllArgsConstructor
 public class GenericSpecification<T> implements Specification<T> {
@@ -39,9 +40,6 @@ public class GenericSpecification<T> implements Specification<T> {
             if(isBoolean(type) && isValidBooleanValue(value.toString())){
                 return criteriaBuilder.equal(root.get(key), getBooleanValue(value.toString()));
             }else if(isString(type)){
-                if(value.toString().startsWith("*")){
-                    return criteriaBuilder.like(root.get(key), value.toString().substring(1) + "%");
-                }
                 return criteriaBuilder.like(root.get(key), "%" + value.toString() + "%");
             }else if(isTemporal(type)){
                 return criteriaBuilder.equal(root.get(key), getTemporalValue(value, type));
@@ -52,6 +50,8 @@ public class GenericSpecification<T> implements Specification<T> {
                     predicates[i] =  criteriaBuilder.like(root.get(key).as(String.class), "%" + searches.get(i) + "%");
                 }
                 return criteriaBuilder.and(predicates);
+            }else if(isUUID(type)){
+                return criteriaBuilder.equal(root.get(key).as(String.class), value.toString());
             }else{
                 return criteriaBuilder.equal(root.get(key), value.toString());
             }
@@ -95,6 +95,8 @@ public class GenericSpecification<T> implements Specification<T> {
     private boolean isLocalTime(Class clazz) {
         return clazz == LocalTime.class;
     }
+
+    private boolean isUUID(Class clazz) { return clazz.isAssignableFrom(UUID.class); }
 
     private boolean isList(Class clazz) { return clazz.isAssignableFrom(List.class); }
 

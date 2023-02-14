@@ -25,6 +25,7 @@ import java.util.stream.Collectors;
 @Builder
 @Table(name="user_entity")
 @EntityListeners(AuditingEntityListener.class)
+@NamedEntityGraph(name = "owner-con-administraciones", attributeNodes = @NamedAttributeNode(value = "administra"))
 public class User implements UserDetails {
 
     @Id

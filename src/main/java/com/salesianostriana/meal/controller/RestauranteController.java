@@ -50,8 +50,8 @@ public class RestauranteController {
 
     @PutMapping("/{id}")
     @JsonView(View.RestauranteView.RestauranteDetailView.class)
-    public RestauranteResponseDTO edit(@PathVariable UUID id, @Valid @RequestBody RestauranteRequestDTO restauranteDto){
-        return RestauranteResponseDTO.of(service.edit(id, restauranteDto));
+    public RestauranteResponseDTO edit(@AuthenticationPrincipal User loggedUser, @PathVariable UUID id, @Valid @RequestBody RestauranteRequestDTO restauranteDto){
+        return RestauranteResponseDTO.of(service.edit(id, restauranteDto, loggedUser));
     }
 
 }

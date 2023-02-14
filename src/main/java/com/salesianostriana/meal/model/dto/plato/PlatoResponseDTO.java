@@ -41,6 +41,7 @@ public class PlatoResponseDTO {
     private List<RateResponseDTO> valoraciones;
 
     @JsonView({View.PlatoView.PlatoGenericView.class, View.PlatoView.PlatoDetailView.class, View.RestauranteView.RestauranteDetailView.class})
+    @JsonInclude(JsonInclude.Include.NON_DEFAULT)
     private double valoracionMedia;
 
 

@@ -31,6 +31,16 @@ import java.time.LocalDateTime;
 @RestControllerAdvice
 public class Advice extends ResponseEntityExceptionHandler {
 
+    @ExceptionHandler({SecurityException.class})
+    public ResponseEntity<?> handleInvalidSearch(SecurityException exception, WebRequest request){
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Error.builder()
+                .status(HttpStatus.FORBIDDEN)
+                .code(HttpStatus.FORBIDDEN.value())
+                .path(((ServletWebRequest) request).getRequest().getRequestURI())
+                .message(exception.getMessage())
+                .build());
+    }
+
     @ExceptionHandler({BadRequestException.class})
     public ResponseEntity<?> handleInvalidSearch(BadRequestException exception, WebRequest request){
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Error.builder()

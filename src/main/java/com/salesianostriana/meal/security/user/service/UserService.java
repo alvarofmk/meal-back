@@ -91,4 +91,8 @@ public class UserService {
         return passwordEncoder.matches(clearPassword, user.getPassword());
     }
 
+    public Optional<User> findAdminOf(UUID id){
+        return userRepository.findFirstById(id);
+    }
+
 }

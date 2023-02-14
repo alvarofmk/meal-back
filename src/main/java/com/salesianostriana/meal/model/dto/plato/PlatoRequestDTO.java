@@ -6,7 +6,11 @@ import lombok.Value;
 import org.hibernate.validator.constraints.URL;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
+import java.util.ArrayList;
+import java.util.List;
 
 @Builder
 @Value
@@ -24,12 +28,21 @@ public class PlatoRequestDTO {
     @URL(message = "")
     private String imgUrl;
 
+    @NotEmpty
+    private List<String> ingredientes;
+
+    @NotNull
+    private boolean sinGluten;
+
+
     public Plato toPlato(){
         return Plato.builder()
                 .nombre(nombre)
                 .descripcion(descripcion)
                 .precio(precio)
                 .imgUrl(imgUrl)
+                .ingredientes(ingredientes)
+                .sinGluten(sinGluten)
                 .build();
     }
 
