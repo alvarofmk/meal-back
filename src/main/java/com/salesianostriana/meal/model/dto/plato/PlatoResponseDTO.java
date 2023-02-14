@@ -1,5 +1,6 @@
 package com.salesianostriana.meal.model.dto.plato;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.salesianostriana.meal.model.Plato;
 import com.salesianostriana.meal.model.view.View;
@@ -35,7 +36,20 @@ public class PlatoResponseDTO {
     @JsonView({View.PlatoView.PlatoGenericView.class, View.PlatoView.PlatoDetailView.class, View.RestauranteView.RestauranteDetailView.class})
     private boolean sinGluten;
 
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    @JsonView({View.PlatoView.PlatoDetailView.class})
+    private List<RateResponseDTO> valoraciones;
+
+    @JsonView({View.PlatoView.PlatoGenericView.class, View.PlatoView.PlatoDetailView.class, View.RestauranteView.RestauranteDetailView.class})
+    private double valoracionMedia;
+
+
+
     public static PlatoResponseDTO of(Plato plato){
+        List<RateResponseDTO> valoraciones = new ArrayList<>();
+        if(plato.getValoraciones()!= null){
+            valoraciones = plato.getValoraciones().stream().map(RateResponseDTO::of).toList();
+        }
         return PlatoResponseDTO.builder()
                 .id(plato.getId())
                 .nombre(plato.getNombre())
@@ -44,6 +58,8 @@ public class PlatoResponseDTO {
                 .imgUrl(plato.getImgUrl())
                 .ingredientes(plato.getIngredientes())
                 .sinGluten(plato.isSinGluten())
+                .valoraciones(valoraciones)
+                .valoracionMedia(plato.getValoracionMedia())
                 .build();
     }
 

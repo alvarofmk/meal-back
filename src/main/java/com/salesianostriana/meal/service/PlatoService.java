@@ -1,5 +1,6 @@
 package com.salesianostriana.meal.service;
 
+import com.salesianostriana.meal.error.exception.AlreadyRatedException;
 import com.salesianostriana.meal.model.Plato;
 import com.salesianostriana.meal.model.Valoracion;
 import com.salesianostriana.meal.model.dto.plato.PlatoRequestDTO;
@@ -74,6 +75,9 @@ public class PlatoService {
     }
 
     public Plato rate(UUID id, RateRequestDTO rateRequestDTO, User loggedUser) {
+        Optional<Valoracion> valOpt = valoracionRepository.findById(new ValoracionPK(loggedUser.getId(), id));
+        if (valOpt.isPresent())
+            throw new AlreadyRatedException();
         return repository.findFirstById(id).map(p -> {
             ValoracionPK pk = new ValoracionPK(loggedUser.getId(), p.getId());
             Valoracion nueva = Valoracion.builder()

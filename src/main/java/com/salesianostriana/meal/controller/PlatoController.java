@@ -90,7 +90,7 @@ public class PlatoController {
     @JsonView(View.PlatoView.PlatoDetailView.class)
     @PutMapping("/rate/{id}")
     public PlatoResponseDTO changeRating(@AuthenticationPrincipal User loggedUser, @PathVariable UUID id, @Valid @RequestBody RateRequestDTO rateDTO){
-        return PlatoResponseDTO.of(service.rate(id, rateDTO, loggedUser));
+        return PlatoResponseDTO.of(service.changeRating(id, loggedUser, rateDTO));
     }
 
 
