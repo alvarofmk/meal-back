@@ -12,6 +12,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -45,7 +46,12 @@ public class GenericSpecification<T> implements Specification<T> {
             }else if(isTemporal(type)){
                 return criteriaBuilder.equal(root.get(key), getTemporalValue(value, type));
             }else if(isList(type)){
-                return criteriaBuilder.like(root.get(key), "%" + value + "%");
+                List<String> searches = Utilities.extractList(value.toString());
+                Predicate[] predicates = new Predicate[searches.size()];
+                for (int i = 0; i < predicates.length; i++) {
+                    predicates[i] =  criteriaBuilder.like(root.get(key).as(String.class), "%" + searches.get(i) + "%");
+                }
+                return criteriaBuilder.and(predicates);
             }else{
                 return criteriaBuilder.equal(root.get(key), value.toString());
             }

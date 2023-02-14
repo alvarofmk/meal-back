@@ -26,4 +26,13 @@ public interface Utilities {
         return Arrays.stream(clazz.getDeclaredFields()).anyMatch(f -> f.getName().equalsIgnoreCase(nombre));
     }
 
+    static List<String> extractList(String listCriteria){
+        List<String> lista = new ArrayList<>();
+        Pattern pattern = Pattern.compile("(\\w+?)+");
+        Matcher matcher = pattern.matcher(listCriteria);
+        while (matcher.find())
+            lista.add(matcher.group());
+        return lista;
+    }
+
 }
