@@ -64,7 +64,6 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(JwtUserResponse.of(user, token));
 
-
     }
 
 
