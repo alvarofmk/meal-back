@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -84,6 +85,35 @@ public class PlatoService {
             nueva.addPlato(p);
             valoracionRepository.save(nueva);
             p.setValoracionMedia(p.getValoraciones().stream().mapToDouble(v -> v.getNota()).sum() / p.getValoraciones().size());
+            return repository.save(p);
+        }).orElseThrow(() -> new EntityNotFoundException());
+    }
+
+    public Plato deleteRating(UUID id, User loggedUser) {
+        Optional<Valoracion> valOpt = valoracionRepository.findById(new ValoracionPK(loggedUser.getId(), id));
+        if (valOpt.isEmpty())
+            throw new EntityNotFoundException();
+        Valoracion v = valOpt.get();
+        return repository.findFirstById(id).map(p -> {
+            p.getValoraciones().remove(v);
+            p.setValoracionMedia(p.getValoraciones().stream().mapToDouble(val -> val.getNota()).sum() / p.getValoraciones().size());
+            valoracionRepository.delete(v);
+            return repository.save(p);
+        }).orElseThrow(() -> new EntityNotFoundException());
+    }
+
+    public Plato changeRating(UUID id, User loggedUser, RateRequestDTO rateRequestDTO) {
+        Optional<Valoracion> valOpt = valoracionRepository.findById(new ValoracionPK(loggedUser.getId(), id));
+        if (valOpt.isEmpty())
+            throw new EntityNotFoundException();
+        Valoracion v = valOpt.get();
+        return repository.findFirstById(id).map(p -> {
+            v.setComentario(rateRequestDTO.getComentario());
+            v.setNota(rateRequestDTO.getNota());
+            p.getValoraciones().remove(v);
+            p.getValoraciones().add(v);
+            p.setValoracionMedia(p.getValoraciones().stream().mapToDouble(val -> val.getNota()).sum() / p.getValoraciones().size());
+            valoracionRepository.save(v);
             return repository.save(p);
         }).orElseThrow(() -> new EntityNotFoundException());
     }

@@ -81,4 +81,17 @@ public class PlatoController {
         return PlatoResponseDTO.of(service.rate(id, rateDTO, loggedUser));
     }
 
+    @JsonView(View.PlatoView.PlatoDetailView.class)
+    @DeleteMapping("/rate/{id}")
+    public PlatoResponseDTO deleteRating(@AuthenticationPrincipal User loggedUser, @PathVariable UUID id){
+        return PlatoResponseDTO.of(service.deleteRating(id, loggedUser));
+    }
+
+    @JsonView(View.PlatoView.PlatoDetailView.class)
+    @PutMapping("/rate/{id}")
+    public PlatoResponseDTO changeRating(@AuthenticationPrincipal User loggedUser, @PathVariable UUID id, @Valid @RequestBody RateRequestDTO rateDTO){
+        return PlatoResponseDTO.of(service.rate(id, rateDTO, loggedUser));
+    }
+
+
 }

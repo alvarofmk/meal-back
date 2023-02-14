@@ -18,6 +18,10 @@ import java.util.Objects;
 @Builder
 public class Valoracion {
 
+    public Valoracion(ValoracionPK pk) {
+        this.pk = pk;
+    }
+
     @EmbeddedId
     private ValoracionPK pk;
 
