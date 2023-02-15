@@ -12,12 +12,17 @@ import com.salesianostriana.meal.search.Criteria;
 import com.salesianostriana.meal.search.Utilities;
 import com.salesianostriana.meal.security.user.User;
 import com.salesianostriana.meal.service.PlatoService;
+import com.salesianostriana.meal.service.storage.MediaUrlResource;
+import com.salesianostriana.meal.service.storage.StorageService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityNotFoundException;
 import javax.validation.Valid;
@@ -31,6 +36,7 @@ import java.util.UUID;
 public class PlatoController {
 
     private final PlatoService service;
+    private final StorageService storageService;
 
 
     @GetMapping("/")
@@ -57,10 +63,34 @@ public class PlatoController {
         return PlatoResponseDTO.of(service.findById(id));
     }
 
+    @GetMapping("/{id}/img/")
+    public ResponseEntity<Resource> getImage(@PathVariable UUID id){
+        Plato plato = service.findById(id);
+        MediaUrlResource resource =
+                (MediaUrlResource) storageService.loadAsResource(plato.getImgUrl());
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .header("Content-Type", resource.getType())
+                .body(resource);
+    }
+
+    @PutMapping("/{id}/img/")
+    public PlatoResponseDTO getImage(@AuthenticationPrincipal User loggedUser, @PathVariable UUID id, @RequestPart("file") MultipartFile file){
+        service.changeImg(loggedUser, id, file);
+        MediaUrlResource resource =
+                (MediaUrlResource) storageService.loadAsResource(plato.getImgUrl());
+
+        return null;
+    }
+
     @JsonView(View.PlatoView.PlatoDetailView.class)
     @PostMapping("/{restaurantId}")
-    public PlatoResponseDTO create(@AuthenticationPrincipal User loggedUser, @Valid @RequestBody PlatoRequestDTO PlatoDto, @PathVariable UUID restaurantId){
-        return PlatoResponseDTO.of(service.add(PlatoDto.toPlato(), restaurantId, loggedUser));
+    public ResponseEntity<PlatoResponseDTO> create(@AuthenticationPrincipal User loggedUser,
+                                   @RequestPart("file") MultipartFile file,
+                                   @Valid @RequestPart("body") PlatoRequestDTO PlatoDto,
+                                   @PathVariable UUID restaurantId){
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(PlatoResponseDTO.of(service.add(PlatoDto.toPlato(), restaurantId, loggedUser, file)));
     }
 
     @PutMapping("/{id}")

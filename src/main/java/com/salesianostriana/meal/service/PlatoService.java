@@ -14,11 +14,13 @@ import com.salesianostriana.meal.search.Criteria;
 import com.salesianostriana.meal.search.SpecBuilder;
 import com.salesianostriana.meal.security.user.User;
 import com.salesianostriana.meal.security.user.service.UserService;
+import com.salesianostriana.meal.service.storage.StorageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
@@ -34,6 +36,8 @@ public class PlatoService {
     private final PlatoRepository repository;
     private final ValoracionRepository valoracionRepository;
     private final UserService userService;
+
+    private final StorageService storageService;
 
     public Page<Plato> findAll(Pageable pageable){
         Page<Plato> result = repository.findAll(pageable);
@@ -51,8 +55,8 @@ public class PlatoService {
         return repository.save(plato);
     }
 
-
-    public Plato add(Plato plato, UUID restaurantId, User loggedUser) {
+    @Transactional
+    public Plato add(Plato plato, UUID restaurantId, User loggedUser, MultipartFile file) {
         Optional<User> owner = userService.findAdminOf(loggedUser.getId());
         if(owner.isPresent()) {
             loggedUser = owner.get();
@@ -60,6 +64,7 @@ public class PlatoService {
             if (restaurantes.isEmpty()) {
                 throw new NotOwnerException();
             }
+            plato.setImgUrl(storageService.store(file));
             plato.addRestaurante(restaurantes.get(0));
             return repository.save(plato);
         }else throw new NotOwnerException();
@@ -101,7 +106,6 @@ public class PlatoService {
                 p.setDescripcion(platoRequestDTO.getDescripcion());
                 p.setPrecio(platoRequestDTO.getPrecio());
                 p.setNombre(platoRequestDTO.getNombre());
-                p.setImgUrl(platoRequestDTO.getImgUrl());
                 p.setIngredientes(platoRequestDTO.getIngredientes());
                 p.setSinGluten(platoRequestDTO.isSinGluten());
                 return repository.save(p);
@@ -167,4 +171,9 @@ public class PlatoService {
         return repository.existsByRestaurante(restaurante);
     }
 
+    public void changeImg(User loggedUser, UUID id, MultipartFile file) {
+        repository.findById(id).map(p -> {
+
+        }).orElseThrow(() -> new EntityNotFoundException());
+    }
 }

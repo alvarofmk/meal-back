@@ -25,9 +25,6 @@ public class PlatoRequestDTO {
     @Positive(message = "")
     private double precio;
 
-    @URL(message = "")
-    private String imgUrl;
-
     @NotEmpty
     private List<String> ingredientes;
 
@@ -40,7 +37,6 @@ public class PlatoRequestDTO {
                 .nombre(nombre)
                 .descripcion(descripcion)
                 .precio(precio)
-                .imgUrl(imgUrl)
                 .ingredientes(ingredientes)
                 .sinGluten(sinGluten)
                 .build();

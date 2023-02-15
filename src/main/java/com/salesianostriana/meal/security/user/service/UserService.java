@@ -1,11 +1,14 @@
 package com.salesianostriana.meal.security.user.service;
 
 import com.salesianostriana.meal.error.exception.InvalidPasswordException;
+import com.salesianostriana.meal.error.exception.NotOwnerException;
+import com.salesianostriana.meal.model.Restaurante;
 import com.salesianostriana.meal.security.user.User;
 import com.salesianostriana.meal.security.user.Roles;
 import com.salesianostriana.meal.security.user.dto.CreateUserRequest;
 import com.salesianostriana.meal.security.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.aspectj.weaver.ast.Not;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -16,9 +19,16 @@ import java.util.*;
 @Service
 @RequiredArgsConstructor
 public class UserService {
-
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
+
+    public boolean checkOwnership(Restaurante restaurante, UUID userId){
+        return userRepository.findFirstById(userId).map(u -> {
+            boolean isAdministrator = u.getAdministra().stream().anyMatch(r -> r.equals(restaurante));
+            if (!isAdministrator) throw new NotOwnerException();
+            return isAdministrator;
+        }).orElseThrow(() -> new NotOwnerException());
+    }
 
     public User createUser(CreateUserRequest createUserRequest, Set<Roles> roles) {
         User user =  User.builder()
