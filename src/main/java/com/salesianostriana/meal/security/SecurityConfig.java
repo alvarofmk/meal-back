@@ -75,12 +75,13 @@ public class SecurityConfig {
                                 .antMatchers(HttpMethod.DELETE,"/restaurante/**").hasAnyRole("ADMIN","OWNER")
                                 .antMatchers(HttpMethod.POST,"/restaurante/**").hasAnyRole("ADMIN","OWNER")
                                 .antMatchers(HttpMethod.PUT,"/restaurante/**").hasAnyRole("ADMIN","OWNER")
-                                .antMatchers("/plato/rate/**").hasAnyRole("ADMIN","OWNER", "USER")
+                                .antMatchers("/plato/rate/**").authenticated()
                                 .antMatchers(HttpMethod.DELETE,"/plato/**").hasAnyRole("ADMIN","OWNER")
                                 .antMatchers(HttpMethod.POST,"/plato/**").hasAnyRole("ADMIN","OWNER")
                                 .antMatchers(HttpMethod.PUT,"/plato/**").hasAnyRole("ADMIN","OWNER")
                                 .antMatchers("/auth/register/admin").hasRole("ADMIN")
                                 .antMatchers("/me/**").authenticated()
+                                .antMatchers("/user/**").authenticated()
                                 .anyRequest().permitAll();
 
         http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);

@@ -1,10 +1,12 @@
 package com.salesianostriana.meal.security.user.service;
 
+import com.salesianostriana.meal.error.exception.HasRestaurantException;
 import com.salesianostriana.meal.error.exception.InvalidPasswordException;
 import com.salesianostriana.meal.error.exception.NotOwnerException;
 import com.salesianostriana.meal.model.Restaurante;
 import com.salesianostriana.meal.security.user.User;
 import com.salesianostriana.meal.security.user.Roles;
+import com.salesianostriana.meal.security.user.dto.ChangePasswordRequest;
 import com.salesianostriana.meal.security.user.dto.CreateUserRequest;
 import com.salesianostriana.meal.security.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +15,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
+import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -76,17 +79,23 @@ public class UserService {
         return userRepository.findFirstByUsername(username);
     }
 
-    public User editPassword(User user, String newPassword) {
-        if(!passwordMatch(user, newPassword))
+    public User editPassword(User user, ChangePasswordRequest changePasswordRequest) {
+        if(!passwordMatch(user, changePasswordRequest.getOldPassword()))
             throw new InvalidPasswordException();
         return userRepository.findById(user.getId())
                 .map(u -> {
-                    u.setPassword(passwordEncoder.encode(newPassword));
+                    u.setPassword(passwordEncoder.encode(changePasswordRequest.getNewPassword()));
                     return userRepository.save(u);
                 }).orElseThrow(() -> new EntityNotFoundException());
     }
 
+    @Transactional
     public void delete(User user) {
+        if(user.getRoles().contains(Roles.OWNER) || user.getRoles().contains(Roles.ADMIN)){
+            List<Restaurante> administra = userRepository.findFirstById(user.getId()).map(u -> u.getAdministra()).orElseThrow(() -> new EntityNotFoundException());
+            if (!administra.isEmpty()) throw new HasRestaurantException();
+        }
+        userRepository.deleteRatings(user.getId());
         deleteById(user.getId());
     }
 

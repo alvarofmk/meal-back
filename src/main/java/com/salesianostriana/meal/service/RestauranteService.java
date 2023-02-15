@@ -2,15 +2,18 @@ package com.salesianostriana.meal.service;
 
 import com.salesianostriana.meal.error.exception.NotOwnerException;
 import com.salesianostriana.meal.error.exception.RestaurantInUseException;
+import com.salesianostriana.meal.model.Plato;
 import com.salesianostriana.meal.model.Restaurante;
 import com.salesianostriana.meal.model.dto.restaurante.RestauranteRequestDTO;
 import com.salesianostriana.meal.repository.RestauranteRepository;
 import com.salesianostriana.meal.security.user.User;
 import com.salesianostriana.meal.security.user.service.UserService;
+import com.salesianostriana.meal.service.storage.StorageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
@@ -24,6 +27,7 @@ public class RestauranteService {
     private final RestauranteRepository repository;
     private final PlatoService platoService;
     private final UserService userService;
+    private final StorageService storageService;
 
     public Page<Restaurante> findAll(Pageable pageable){
         Page<Restaurante> result = repository.findAll(pageable);
@@ -33,8 +37,9 @@ public class RestauranteService {
         return result;
     }
 
-    public Restaurante add(Restaurante restaurante, User loggedUser){
+    public Restaurante add(Restaurante restaurante, User loggedUser, MultipartFile file){
         restaurante.setRestaurantAdmin(loggedUser);
+        restaurante.setCoverImgUrl(storageService.store(file));
         return repository.save(restaurante);
     }
 
@@ -65,5 +70,22 @@ public class RestauranteService {
 
     public Restaurante findWithMenu(UUID id) {
         return repository.findOneWithMenu(id).orElseThrow(() -> new EntityNotFoundException());
+    }
+
+    public Restaurante changeImg(User loggedUser, UUID id, MultipartFile file) {
+        return repository.findById(id).map(r -> {
+            userService.checkOwnership(r, loggedUser.getId());
+            storageService.deleteFile(r.getCoverImgUrl());
+            r.setCoverImgUrl(storageService.store(file));
+            return repository.save(r);
+        }).orElseThrow(() -> new EntityNotFoundException());
+    }
+
+    public Restaurante deleteImg(User loggedUser, UUID id) {
+        return repository.findById(id).map(r -> {
+            userService.checkOwnership(r, loggedUser.getId());
+            storageService.deleteFile(r.getCoverImgUrl());
+            return repository.save(r);
+        }).orElseThrow(() -> new EntityNotFoundException());
     }
 }

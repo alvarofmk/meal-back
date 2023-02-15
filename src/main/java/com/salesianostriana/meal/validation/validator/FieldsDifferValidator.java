@@ -1,27 +1,29 @@
 package com.salesianostriana.meal.validation.validator;
 
+import com.salesianostriana.meal.validation.annotation.FieldsDiffer;
 import com.salesianostriana.meal.validation.annotation.FieldsMatch;
 import org.springframework.beans.PropertyAccessorFactory;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
-public class FieldsMatchValidator implements ConstraintValidator<FieldsMatch, Object> {
+public class FieldsDifferValidator implements ConstraintValidator<FieldsDiffer, Object> {
 
     private String field;
-    private String fieldMatch;
+    private String secondField;
 
     @Override
-    public void initialize(FieldsMatch constraintAnnotation) {
+    public void initialize(FieldsDiffer constraintAnnotation) {
         this.field = constraintAnnotation.field();
-        this.fieldMatch = constraintAnnotation.fieldMatch();
+        this.secondField = constraintAnnotation.secondField();
     }
 
     @Override
     public boolean isValid(Object o, ConstraintValidatorContext constraintValidatorContext) {
         Object field1 = PropertyAccessorFactory.forBeanPropertyAccess(o).getPropertyValue(this.field);
-        Object field2 = PropertyAccessorFactory.forBeanPropertyAccess(o).getPropertyValue(this.fieldMatch);
+        Object field2 = PropertyAccessorFactory.forBeanPropertyAccess(o).getPropertyValue(this.secondField);
 
-        return field1.equals(field2);
+        return !field1.equals(field2);
     }
+
 }

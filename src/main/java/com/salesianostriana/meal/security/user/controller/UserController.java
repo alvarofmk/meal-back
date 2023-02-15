@@ -71,7 +71,13 @@ public class UserController {
     @PutMapping("/user/changePassword")
     public UserResponse changePassword(@Valid @RequestBody ChangePasswordRequest changePasswordRequest,
                                                        @AuthenticationPrincipal User loggedUser) {
-        return UserResponse.fromUser(userService.editPassword(loggedUser, changePasswordRequest.getNewPassword()));
+        return UserResponse.fromUser(userService.editPassword(loggedUser, changePasswordRequest));
+    }
+
+    @DeleteMapping("/user/deleteAccount")
+    public ResponseEntity<?> changePassword(@AuthenticationPrincipal User loggedUser) {
+        userService.delete(loggedUser);
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/me")
