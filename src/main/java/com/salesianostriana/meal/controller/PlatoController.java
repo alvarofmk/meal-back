@@ -66,6 +66,7 @@ public class PlatoController {
     @GetMapping("/{id}/img/")
     public ResponseEntity<Resource> getImage(@PathVariable UUID id){
         Plato plato = service.findById(id);
+        if(plato.getImgUrl() == null) throw new EntityNotFoundException();
         MediaUrlResource resource =
                 (MediaUrlResource) storageService.loadAsResource(plato.getImgUrl());
 
@@ -75,12 +76,13 @@ public class PlatoController {
     }
 
     @PutMapping("/{id}/img/")
-    public PlatoResponseDTO getImage(@AuthenticationPrincipal User loggedUser, @PathVariable UUID id, @RequestPart("file") MultipartFile file){
-        service.changeImg(loggedUser, id, file);
-        MediaUrlResource resource =
-                (MediaUrlResource) storageService.loadAsResource(plato.getImgUrl());
+    public PlatoResponseDTO changeImage(@AuthenticationPrincipal User loggedUser, @PathVariable UUID id, @RequestPart("file") MultipartFile file){
+        return PlatoResponseDTO.of(service.changeImg(loggedUser, id, file));
+    }
 
-        return null;
+    @DeleteMapping("/{id}/img/")
+    public PlatoResponseDTO deleteImg(@AuthenticationPrincipal User loggedUser, @PathVariable UUID id){
+        return PlatoResponseDTO.of(service.deleteImg(loggedUser, id));
     }
 
     @JsonView(View.PlatoView.PlatoDetailView.class)

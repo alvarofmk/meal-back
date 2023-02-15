@@ -37,6 +37,8 @@ public class PlatoService {
     private final ValoracionRepository valoracionRepository;
     private final UserService userService;
 
+    private final RestauranteFinderService restauranteFinderService;
+
     private final StorageService storageService;
 
     public Page<Plato> findAll(Pageable pageable){
@@ -57,33 +59,21 @@ public class PlatoService {
 
     @Transactional
     public Plato add(Plato plato, UUID restaurantId, User loggedUser, MultipartFile file) {
-        Optional<User> owner = userService.findAdminOf(loggedUser.getId());
-        if(owner.isPresent()) {
-            loggedUser = owner.get();
-            List<Restaurante> restaurantes = loggedUser.getAdministra().stream().filter(r -> r.getId().equals(restaurantId)).toList();
-            if (restaurantes.isEmpty()) {
-                throw new NotOwnerException();
-            }
-            plato.setImgUrl(storageService.store(file));
-            plato.addRestaurante(restaurantes.get(0));
-            return repository.save(plato);
-        }else throw new NotOwnerException();
+        Restaurante restaurante = restauranteFinderService.findById(restaurantId);
+        userService.checkOwnership(restaurante, loggedUser.getId());
+        plato.setImgUrl(storageService.store(file));
+        plato.addRestaurante(restaurante);
+        return repository.save(plato);
     }
 
     @Transactional
     public void deleteById(UUID id, User loggedUser){
-        Optional<User> owner = userService.findAdminOf(loggedUser.getId());
-        if(owner.isPresent()) {
-            loggedUser = owner.get();
-            Optional<Plato> result = repository.findById(id);
-            if (result.isPresent()){
-                if (loggedUser.getAdministra().stream().noneMatch(r -> r.getId().equals(result.get().getRestaurante().getId()))) {
-                    throw new NotOwnerException();
-                }
-                repository.deleteRatings(id);
-                repository.deleteById(id);
-            }
-        }else throw new NotOwnerException();
+        repository.findById(id).map(p -> {
+            userService.checkOwnership(p.getRestaurante(), loggedUser.getId());
+            repository.deleteRatings(id);
+            repository.deleteById(id);
+            return p;
+        });
     }
 
     public Page<Plato> searchByRestaurant(UUID id, Pageable pageable){
@@ -96,21 +86,15 @@ public class PlatoService {
 
     @Transactional
     public Plato edit(UUID id, PlatoRequestDTO platoRequestDTO, User loggedUser) {
-        Optional<User> owner = userService.findAdminOf(loggedUser.getId());
-        if (owner.isPresent()) {
-            User finalLoggedUser = owner.get();
-            return repository.findById(id).map(p -> {
-                if (finalLoggedUser.getAdministra().stream().noneMatch(r -> r.getId().equals(p.getRestaurante().getId()))) {
-                    throw new NotOwnerException();
-                }
-                p.setDescripcion(platoRequestDTO.getDescripcion());
-                p.setPrecio(platoRequestDTO.getPrecio());
-                p.setNombre(platoRequestDTO.getNombre());
-                p.setIngredientes(platoRequestDTO.getIngredientes());
-                p.setSinGluten(platoRequestDTO.isSinGluten());
-                return repository.save(p);
-            }).orElseThrow(() -> new EntityNotFoundException());
-        }else throw new NotOwnerException();
+        return repository.findById(id).map(p -> {
+            userService.checkOwnership(p.getRestaurante(), loggedUser.getId());
+            p.setDescripcion(platoRequestDTO.getDescripcion());
+            p.setPrecio(platoRequestDTO.getPrecio());
+            p.setNombre(platoRequestDTO.getNombre());
+            p.setIngredientes(platoRequestDTO.getIngredientes());
+            p.setSinGluten(platoRequestDTO.isSinGluten());
+            return repository.save(p);
+        }).orElseThrow(() -> new EntityNotFoundException());
     }
 
     public Page<Plato> search(List<Criteria> criterios, Pageable pageable){
@@ -171,9 +155,21 @@ public class PlatoService {
         return repository.existsByRestaurante(restaurante);
     }
 
-    public void changeImg(User loggedUser, UUID id, MultipartFile file) {
-        repository.findById(id).map(p -> {
+    public Plato changeImg(User loggedUser, UUID id, MultipartFile file) {
+        return repository.findById(id).map(p -> {
+            userService.checkOwnership(p.getRestaurante(), loggedUser.getId());
+            storageService.deleteFile(p.getImgUrl());
+            p.setImgUrl(storageService.store(file));
+            return repository.save(p);
+        }).orElseThrow(() -> new EntityNotFoundException());
+    }
 
+    public Plato deleteImg(User loggedUser, UUID id) {
+        return repository.findById(id).map(p -> {
+            userService.checkOwnership(p.getRestaurante(), loggedUser.getId());
+            storageService.deleteFile(p.getImgUrl());
+            p.setImgUrl(null);
+            return repository.save(p);
         }).orElseThrow(() -> new EntityNotFoundException());
     }
 }
