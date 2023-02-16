@@ -17,7 +17,7 @@ public class TestData {
 
     private final RestauranteRepository restauranteRepository;
     private final PlatoRepository platoRepository;
-
+    /*
     @PostConstruct
     public void initData(){
         Restaurante r1 = Restaurante.builder()
@@ -99,6 +99,6 @@ public class TestData {
         platoRepository.save(p3);
         platoRepository.save(p4);
         platoRepository.save(p5);
-    }
+    }*/
 
 }
