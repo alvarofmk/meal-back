@@ -29,10 +29,6 @@ public class RestauranteResponseDTO {
     @JsonView({View.RestauranteView.RestauranteGenericView.class, View.RestauranteView.RestauranteDetailView.class})
     private String coverImgUrl;
 
-    @JsonView({View.RestauranteView.RestauranteDetailView.class})
-    @JsonInclude(value = JsonInclude.Include.NON_EMPTY)
-    private List<PlatoResponseDTO> platos;
-
     @JsonView({View.RestauranteView.RestauranteGenericView.class, View.RestauranteView.RestauranteDetailView.class})
     private LocalTime apertura;
 
@@ -47,7 +43,6 @@ public class RestauranteResponseDTO {
                 .apertura(restaurante.getApertura())
                 .cierre(restaurante.getCierre())
                 .descripcion(restaurante.getDescripcion())
-                .platos(restaurante.getPlatos().stream().map(PlatoResponseDTO::of).toList())
                 .build();
     }
 
