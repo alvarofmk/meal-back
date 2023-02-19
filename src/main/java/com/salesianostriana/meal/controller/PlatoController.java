@@ -52,9 +52,14 @@ public class PlatoController {
 
     @JsonView(View.PlatoView.PlatoGenericView.class)
     @GetMapping("/restaurante/{id}")
-    public PageDTO<PlatoResponseDTO> findByRestaurant(@PageableDefault(page = 0, size = 10) Pageable pageable, @PathVariable UUID id){
+    public PageDTO<PlatoResponseDTO> findByRestaurant(@RequestParam(value = "search", defaultValue = "")String search,
+                                                      @PageableDefault(page = 0, size = 10) Pageable pageable, @PathVariable UUID id){
+        List<Criteria> criterios = Utilities.extractCriteria(search);
+        criterios.add(new Criteria("restaurante", ":", id));
+        if (!criterios.stream().allMatch(c -> Utilities.checkParam(c.getKey(), Plato.class)))
+            throw new InvalidSearchException();
         PageDTO<PlatoResponseDTO> result = new PageDTO<>();
-        return result.of(service.searchByRestaurant(id, pageable).map(PlatoResponseDTO::of));
+        return result.of(service.search(criterios, pageable).map(PlatoResponseDTO::of));
     }
 
     @JsonView(View.PlatoView.PlatoDetailView.class)

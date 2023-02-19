@@ -5,6 +5,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import com.salesianostriana.meal.model.Restaurante;
 import lombok.AllArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
 
@@ -50,8 +51,8 @@ public class GenericSpecification<T> implements Specification<T> {
                     predicates[i] =  criteriaBuilder.like(root.get(key).as(String.class), "%" + searches.get(i) + "%");
                 }
                 return criteriaBuilder.and(predicates);
-            }else if(isUUID(type)){
-                return criteriaBuilder.equal(root.get(key).as(String.class), value.toString());
+            }else if(isRestaurant(type)){
+                return criteriaBuilder.equal(root.join(key).get("id").as(String.class), value.toString());
             }else{
                 return criteriaBuilder.equal(root.get(key), value.toString());
             }
@@ -96,7 +97,8 @@ public class GenericSpecification<T> implements Specification<T> {
         return clazz == LocalTime.class;
     }
 
-    private boolean isUUID(Class clazz) { return clazz.isAssignableFrom(UUID.class); }
+
+    private boolean isRestaurant(Class clazz) { return clazz.isAssignableFrom(Restaurante.class); }
 
     private boolean isList(Class clazz) { return clazz.isAssignableFrom(List.class); }
 

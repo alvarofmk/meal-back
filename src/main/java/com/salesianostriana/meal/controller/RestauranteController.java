@@ -92,4 +92,12 @@ public class RestauranteController {
         return RestauranteResponseDTO.of(service.edit(id, restauranteDto, loggedUser));
     }
 
+    @GetMapping("/managed")
+    @JsonView(View.RestauranteView.RestauranteGenericView.class)
+    public PageDTO<RestauranteResponseDTO> findManaged(@AuthenticationPrincipal User loggedUser,
+                                                       @PageableDefault(page = 0, size = 10) Pageable pageable){
+        PageDTO<RestauranteResponseDTO> result = new PageDTO<>();
+        return result.of(service.findManaged(loggedUser, pageable).map(RestauranteResponseDTO::of));
+    }
+
 }

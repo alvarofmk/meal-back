@@ -88,4 +88,8 @@ public class RestauranteService {
             return repository.save(r);
         }).orElseThrow(() -> new EntityNotFoundException());
     }
+
+    public Page<Restaurante> findManaged(User loggedUser, Pageable pageable) {
+        return repository.findByRestaurantAdmin(loggedUser, pageable);
+    }
 }

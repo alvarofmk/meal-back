@@ -75,7 +75,7 @@ public class UserController {
     }
 
     @DeleteMapping("/user/deleteAccount")
-    public ResponseEntity<?> changePassword(@AuthenticationPrincipal User loggedUser) {
+    public ResponseEntity<?> deleteAccount(@AuthenticationPrincipal User loggedUser) {
         userService.delete(loggedUser);
         return ResponseEntity.noContent().build();
     }

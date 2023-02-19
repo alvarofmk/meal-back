@@ -1,6 +1,7 @@
 package com.salesianostriana.meal.security.user.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.salesianostriana.meal.security.user.Roles;
 import com.salesianostriana.meal.security.user.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -8,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
+import java.util.Set;
 
 @Data
 @NoArgsConstructor @AllArgsConstructor
@@ -16,6 +18,7 @@ public class UserResponse {
 
     protected String id;
     protected String username, avatar, nombre, email;
+    protected Set<Roles> roles;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm:ss")
     protected LocalDateTime createdAt;
@@ -29,6 +32,7 @@ public class UserResponse {
                 .nombre(user.getNombre())
                 .createdAt(user.getCreatedAt())
                 .email(user.getEmail())
+                .roles(user.getRoles())
                 .build();
     }
 
