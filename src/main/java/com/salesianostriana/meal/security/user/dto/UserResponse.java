@@ -17,7 +17,7 @@ import java.util.Set;
 public class UserResponse {
 
     protected String id;
-    protected String username, avatar, nombre, email;
+    protected String username, nombre, email;
     protected Set<Roles> roles;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm:ss")
