@@ -20,8 +20,6 @@ public class RestauranteRequestDTO {
     @Size(max = 200, message = "{RestauranteRequestDTO.descripcion.size}")
     private String descripcion;
 
-    @URL(message = "{RestauranteRequestDTO.coverImgUrl}")
-    private String coverImgUrl;
     private LocalTime apertura;
     private LocalTime cierre;
 
@@ -29,7 +27,6 @@ public class RestauranteRequestDTO {
         return Restaurante.builder()
                 .nombre(this.nombre)
                 .descripcion(this.descripcion)
-                .coverImgUrl(this.coverImgUrl)
                 .apertura(this.apertura)
                 .cierre(this.cierre)
                 .build();

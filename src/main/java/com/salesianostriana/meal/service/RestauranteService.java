@@ -63,7 +63,6 @@ public class RestauranteService {
             r.setCierre(restauranteRequestDTO.getCierre());
             r.setNombre(restauranteRequestDTO.getNombre());
             r.setDescripcion(restauranteRequestDTO.getDescripcion());
-            r.setCoverImgUrl(restauranteRequestDTO.getCoverImgUrl());
             return repository.save(r);
         }).orElseThrow(() -> new EntityNotFoundException());
     }
