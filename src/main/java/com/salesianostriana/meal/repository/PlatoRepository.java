@@ -17,7 +17,7 @@ public interface PlatoRepository extends JpaRepository<Plato, UUID>, JpaSpecific
     @Query("SELECT p FROM Plato p WHERE p.restaurante.id = :id")
     public Page<Plato> findByRestaurant(UUID id, Pageable pageable);
 
-    @EntityGraph("plato-con-valoraciones")
+    @EntityGraph(value = "plato-con-valoraciones", type = EntityGraph.EntityGraphType.LOAD)
     public Optional<Plato> findFirstById(UUID id);
 
     @Modifying

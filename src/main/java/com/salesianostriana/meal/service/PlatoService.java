@@ -50,7 +50,7 @@ public class PlatoService {
     }
 
     public Plato findById(UUID id) {
-        return repository.findById(id).orElseThrow(() ->new EntityNotFoundException());
+        return repository.findFirstById(id).orElseThrow(() ->new EntityNotFoundException());
     }
 
     public Plato add(Plato plato){
@@ -118,10 +118,12 @@ public class PlatoService {
             nueva.addPlato(p);
             valoracionRepository.save(nueva);
             p.setValoracionMedia(p.getValoraciones().stream().mapToDouble(v -> v.getNota()).sum() / p.getValoraciones().size());
-            return repository.save(p);
+            repository.save(p);
+            return p;
         }).orElseThrow(() -> new EntityNotFoundException());
     }
 
+    @Transactional
     public Plato deleteRating(UUID id, User loggedUser) {
         Optional<Valoracion> valOpt = valoracionRepository.findById(new ValoracionPK(loggedUser.getId(), id));
         if (valOpt.isEmpty())
@@ -129,8 +131,8 @@ public class PlatoService {
         Valoracion v = valOpt.get();
         return repository.findFirstById(id).map(p -> {
             p.getValoraciones().remove(v);
+            valoracionRepository.deleteById(v.getPk());
             p.setValoracionMedia(p.getValoraciones().stream().mapToDouble(val -> val.getNota()).sum() / p.getValoraciones().size());
-            valoracionRepository.delete(v);
             return repository.save(p);
         }).orElseThrow(() -> new EntityNotFoundException());
     }

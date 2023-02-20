@@ -120,8 +120,9 @@ public class PlatoController {
 
     @JsonView(View.PlatoView.PlatoDetailView.class)
     @DeleteMapping("/rate/{id}")
-    public PlatoResponseDTO deleteRating(@AuthenticationPrincipal User loggedUser, @PathVariable UUID id){
-        return PlatoResponseDTO.of(service.deleteRating(id, loggedUser));
+    public ResponseEntity<?> deleteRating(@AuthenticationPrincipal User loggedUser, @PathVariable UUID id){
+        service.deleteRating(id, loggedUser);
+        return ResponseEntity.noContent().build();
     }
 
     @JsonView(View.PlatoView.PlatoDetailView.class)

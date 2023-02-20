@@ -6,6 +6,7 @@ import com.salesianostriana.meal.model.Plato;
 import com.salesianostriana.meal.model.view.View;
 import lombok.Builder;
 import lombok.Value;
+import org.hibernate.LazyInitializationException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,8 +49,10 @@ public class PlatoResponseDTO {
 
     public static PlatoResponseDTO of(Plato plato){
         List<RateResponseDTO> valoraciones = new ArrayList<>();
-        if(plato.getValoraciones()!= null){
+        try{
             valoraciones = plato.getValoraciones().stream().map(RateResponseDTO::of).toList();
+        }catch(LazyInitializationException exception){
+            valoraciones = new ArrayList<>();
         }
         return PlatoResponseDTO.builder()
                 .id(plato.getId())

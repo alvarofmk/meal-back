@@ -3,11 +3,9 @@ package com.salesianostriana.meal.model;
 import com.salesianostriana.meal.model.key.ValoracionPK;
 import com.salesianostriana.meal.security.user.User;
 import lombok.*;
+import org.springframework.data.jpa.repository.EntityGraph;
 
-import javax.persistence.EmbeddedId;
-import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
-import javax.persistence.MapsId;
+import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
