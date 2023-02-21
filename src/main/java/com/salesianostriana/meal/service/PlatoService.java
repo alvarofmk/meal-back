@@ -41,14 +41,6 @@ public class PlatoService {
 
     private final StorageService storageService;
 
-    public Page<Plato> findAll(Pageable pageable){
-        Page<Plato> result = repository.findAll(pageable);
-        if(result.getTotalElements() == 0){
-            throw new EntityNotFoundException();
-        }
-        return result;
-    }
-
     public Plato findById(UUID id) {
         return repository.findFirstById(id).orElseThrow(() ->new EntityNotFoundException());
     }
@@ -76,14 +68,6 @@ public class PlatoService {
         });
     }
 
-    public Page<Plato> searchByRestaurant(UUID id, Pageable pageable){
-        Page<Plato> result = repository.findByRestaurant(id, pageable);
-        if(result.getTotalElements() == 0){
-            throw new EntityNotFoundException();
-        }
-        return result;
-    }
-
     @Transactional
     public Plato edit(UUID id, PlatoRequestDTO platoRequestDTO, User loggedUser) {
         return repository.findById(id).map(p -> {
@@ -100,6 +84,10 @@ public class PlatoService {
     public Page<Plato> search(List<Criteria> criterios, Pageable pageable){
         SpecBuilder<Plato> builder = new SpecBuilder<>(criterios, Plato.class);
         Specification<Plato> spec = builder.build();
+        Page<Plato> result = repository.findAll(spec, pageable);
+        if(result.getContent().isEmpty()){
+            throw new EntityNotFoundException("No se ha encontrado ningún producto");
+        }
         return repository.findAll(spec, pageable);
     }
 

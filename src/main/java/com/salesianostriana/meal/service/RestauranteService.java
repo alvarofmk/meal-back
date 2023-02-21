@@ -31,7 +31,7 @@ public class RestauranteService {
 
     public Page<Restaurante> findAll(Pageable pageable){
         Page<Restaurante> result = repository.findAll(pageable);
-        if(result.getTotalElements() == 0){
+        if(result.getNumberOfElements() == 0){
             throw new EntityNotFoundException();
         }
         return result;
