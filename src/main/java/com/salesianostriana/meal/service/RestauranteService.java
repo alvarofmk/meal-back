@@ -74,7 +74,6 @@ public class RestauranteService {
     public Restaurante changeImg(User loggedUser, UUID id, MultipartFile file) {
         return repository.findById(id).map(r -> {
             userService.checkOwnership(r, loggedUser.getId());
-            storageService.deleteFile(r.getCoverImgUrl());
             r.setCoverImgUrl(storageService.store(file));
             return repository.save(r);
         }).orElseThrow(() -> new EntityNotFoundException());

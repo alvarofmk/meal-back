@@ -148,7 +148,6 @@ public class PlatoService {
     public Plato changeImg(User loggedUser, UUID id, MultipartFile file) {
         return repository.findById(id).map(p -> {
             userService.checkOwnership(p.getRestaurante(), loggedUser.getId());
-            storageService.deleteFile(p.getImgUrl());
             p.setImgUrl(storageService.store(file));
             return repository.save(p);
         }).orElseThrow(() -> new EntityNotFoundException());

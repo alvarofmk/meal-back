@@ -34,25 +34,63 @@ public class UserController {
     private final JwtProvider jwtProvider;
 
 
+    @Operation(summary = "Registra al usuario en la api como cliente")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201",
+                    description = "Se ha registrado correctamente",
+                    content = {@Content(schema = @Schema(implementation = JwtUserResponse.class))}),
+            @ApiResponse(responseCode = "400",
+                    description = "Los datos no son válidos",
+                    content = @Content(schema = @Schema(implementation = com.salesianostriana.meal.error.model.Error.class))),
+    })
     @PostMapping("/auth/register")
     public ResponseEntity<UserResponse> createUserWithUserRole(@RequestBody CreateUserRequest createUserRequest) {
         User user = userService.createUserWithUserRole(createUserRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body(UserResponse.fromUser(user));
     }
 
+    @Operation(summary = "Registra un usuario en la api como administrador")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201",
+                    description = "Se ha registrado correctamente",
+                    content = {@Content(schema = @Schema(implementation = JwtUserResponse.class))}),
+            @ApiResponse(responseCode = "400",
+                    description = "Los datos no son válidos",
+                    content = @Content(schema = @Schema(implementation = com.salesianostriana.meal.error.model.Error.class))),
+            @ApiResponse(responseCode = "403",
+                    description = "El usuario actual no tiene rol de administrador",
+                    content = @Content(schema = @Schema(implementation = com.salesianostriana.meal.error.model.Error.class))),
+    })
     @PostMapping("/auth/register/admin")
     public ResponseEntity<UserResponse> createUserWithAdminRole(@RequestBody CreateUserRequest createUserRequest) {
         User user = userService.createUserWithAdminRole(createUserRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body(UserResponse.fromUser(user));
     }
 
+    @Operation(summary = "Registra al usuario en la api como propietario")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201",
+                    description = "Se ha registrado correctamente",
+                    content = {@Content(schema = @Schema(implementation = JwtUserResponse.class))}),
+            @ApiResponse(responseCode = "400",
+                    description = "Los datos no son válidos",
+                    content = @Content(schema = @Schema(implementation = com.salesianostriana.meal.error.model.Error.class))),
+    })
     @PostMapping("/auth/register/owner")
     public ResponseEntity<UserResponse> createUserWithOwnerRole(@RequestBody CreateUserRequest createUserRequest) {
         User user = userService.createUserWithOwnerRole(createUserRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body(UserResponse.fromUser(user));
     }
 
-
+    @Operation(summary = "Log in en la api")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201",
+                    description = "Se ha logado correctamente",
+                    content = {@Content(schema = @Schema(implementation = JwtUserResponse.class))}),
+            @ApiResponse(responseCode = "401",
+                    description = "Las credenciales están mal",
+                    content = @Content(schema = @Schema(implementation = com.salesianostriana.meal.error.model.Error.class))),
+    })
     @PostMapping("/auth/login")
     public ResponseEntity<JwtUserResponse> login(@RequestBody LoginRequest loginRequest) {
 
