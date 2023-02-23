@@ -39,7 +39,7 @@ import java.security.InvalidAlgorithmParameterException;
 import java.util.List;
 import java.util.UUID;
 
-class response extends PageDTO<PlatoResponseDTO>{}
+class PagePlatoResponse extends PageDTO<PlatoResponseDTO>{}
 @RestController
 @RequestMapping("/plato")
 @RequiredArgsConstructor
@@ -55,7 +55,7 @@ public class PlatoController {
                     description = "Se han encontrado platos",
                     content = {
                             @Content(mediaType = "application/json",
-                                    array = @ArraySchema(schema = @Schema(implementation = response.class)))
+                                    array = @ArraySchema(schema = @Schema(implementation = PagePlatoResponse.class)))
                     }),
             @ApiResponse(responseCode = "404",
                     description = "No se han encontrado platos",
@@ -82,7 +82,7 @@ public class PlatoController {
                     description = "Se han encontrado platos",
                     content = {
                             @Content(mediaType = "application/json",
-                                    array = @ArraySchema(schema = @Schema(implementation = response.class)))
+                                    array = @ArraySchema(schema = @Schema(implementation = PagePlatoResponse.class)))
                     }),
             @ApiResponse(responseCode = "404",
                     description = "No se han encontrado platos",
@@ -147,14 +147,17 @@ public class PlatoController {
 
     @Operation(summary = "Cambia la imagen de un plato")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201",
-                    description = "Se ha encontrado el plato y su imagen",
+            @ApiResponse(responseCode = "200",
+                    description = "Se ha cambiado la imagen",
                     content = {@Content(schema = @Schema(implementation = PlatoResponseDTO.class))}),
             @ApiResponse(responseCode = "404",
                     description = "No se han encontrado el plato o su imagen",
                     content = @Content(schema = @Schema(implementation = com.salesianostriana.meal.error.model.Error.class))),
+            @ApiResponse(responseCode = "401",
+                    description = "No se está loggeado",
+                    content = @Content(schema = @Schema(implementation = com.salesianostriana.meal.error.model.Error.class))),
             @ApiResponse(responseCode = "403",
-                    description = "No se está loggeado o el usuario no es el propietario del recurso",
+                    description = "El usuario no es el propietario del recurso",
                     content = @Content(schema = @Schema(implementation = com.salesianostriana.meal.error.model.Error.class))),
     })
     @Parameter(description = "Id del plato del cual cambiar la imagen", name = "id", required = true)
@@ -171,8 +174,11 @@ public class PlatoController {
             @ApiResponse(responseCode = "404",
                     description = "No se han encontrado el plato o su imagen",
                     content = @Content(schema = @Schema(implementation = com.salesianostriana.meal.error.model.Error.class))),
+            @ApiResponse(responseCode = "401",
+                    description = "No se está loggeado",
+                    content = @Content(schema = @Schema(implementation = com.salesianostriana.meal.error.model.Error.class))),
             @ApiResponse(responseCode = "403",
-                    description = "No se está loggeado o el usuario no es el propietario del recurso",
+                    description = "El usuario no es el propietario del recurso",
                     content = @Content(schema = @Schema(implementation = com.salesianostriana.meal.error.model.Error.class))),
     })
     @Parameter(description = "Id del plato del cual borrar la imagen", name = "id", required = true)
@@ -192,8 +198,11 @@ public class PlatoController {
             @ApiResponse(responseCode = "404",
                     description = "No se han encontrado el restaurante al que añadir el plato",
                     content = @Content(schema = @Schema(implementation = com.salesianostriana.meal.error.model.Error.class))),
+            @ApiResponse(responseCode = "401",
+                    description = "No se está loggeado",
+                    content = @Content(schema = @Schema(implementation = com.salesianostriana.meal.error.model.Error.class))),
             @ApiResponse(responseCode = "403",
-                    description = "No se está loggeado o el usuario no es el propietario del restaurante",
+                    description = "El usuario no es el propietario del restaurante",
                     content = @Content(schema = @Schema(implementation = com.salesianostriana.meal.error.model.Error.class))),
     })
     @Parameter(description = "Id del restaurante al cual cambiar añadir el plato", name = "restaurantId", required = true)
@@ -218,8 +227,11 @@ public class PlatoController {
             @ApiResponse(responseCode = "404",
                     description = "No se han encontrado el plato a editar",
                     content = @Content(schema = @Schema(implementation = com.salesianostriana.meal.error.model.Error.class))),
+            @ApiResponse(responseCode = "401",
+                    description = "No se está loggeado",
+                    content = @Content(schema = @Schema(implementation = com.salesianostriana.meal.error.model.Error.class))),
             @ApiResponse(responseCode = "403",
-                    description = "No se está loggeado o el usuario no es el propietario del recurso",
+                    description = "El usuario no es el propietario del recurso",
                     content = @Content(schema = @Schema(implementation = com.salesianostriana.meal.error.model.Error.class))),
     })
     @Parameter(description = "Id del plato a editar", name = "id", required = true)
@@ -236,8 +248,11 @@ public class PlatoController {
             @ApiResponse(responseCode = "404",
                     description = "No se ha encontrado el plato",
                     content = @Content(schema = @Schema(implementation = com.salesianostriana.meal.error.model.Error.class))),
+            @ApiResponse(responseCode = "401",
+                    description = "No se está loggeado",
+                    content = @Content(schema = @Schema(implementation = com.salesianostriana.meal.error.model.Error.class))),
             @ApiResponse(responseCode = "403",
-                    description = "No se está loggeado o el usuario no es el propietario del recurso",
+                    description = "El usuario no es el propietario del recurso",
                     content = @Content(schema = @Schema(implementation = com.salesianostriana.meal.error.model.Error.class))),
     })
     @Parameter(description = "Id del plato a borrar", name = "id", required = true)
@@ -258,7 +273,7 @@ public class PlatoController {
             @ApiResponse(responseCode = "404",
                     description = "No se han encontrado el plato a valorar",
                     content = @Content(schema = @Schema(implementation = com.salesianostriana.meal.error.model.Error.class))),
-            @ApiResponse(responseCode = "403",
+            @ApiResponse(responseCode = "401",
                     description = "No se está loggeado",
                     content = @Content(schema = @Schema(implementation = com.salesianostriana.meal.error.model.Error.class))),
     })
@@ -277,7 +292,7 @@ public class PlatoController {
             @ApiResponse(responseCode = "404",
                     description = "No se ha encontrado el plato o no se ha valorado",
                     content = @Content(schema = @Schema(implementation = com.salesianostriana.meal.error.model.Error.class))),
-            @ApiResponse(responseCode = "403",
+            @ApiResponse(responseCode = "401",
                     description = "No se está loggeado",
                     content = @Content(schema = @Schema(implementation = com.salesianostriana.meal.error.model.Error.class))),
     })
@@ -289,6 +304,22 @@ public class PlatoController {
         return ResponseEntity.noContent().build();
     }
 
+    @Operation(summary = "Edita la valoración de un plato")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",
+                    description = "Se ha editado la valoración",
+                    content = {@Content(schema = @Schema(implementation = PlatoResponseDTO.class))}),
+            @ApiResponse(responseCode = "400",
+                    description = "Los datos no son válidos",
+                    content = @Content(schema = @Schema(implementation = com.salesianostriana.meal.error.model.Error.class))),
+            @ApiResponse(responseCode = "404",
+                    description = "No se han encontrado el plato o no se ha valorado",
+                    content = @Content(schema = @Schema(implementation = com.salesianostriana.meal.error.model.Error.class))),
+            @ApiResponse(responseCode = "401",
+                    description = "No se está loggeado",
+                    content = @Content(schema = @Schema(implementation = com.salesianostriana.meal.error.model.Error.class))),
+    })
+    @Parameter(description = "Id del plato del cual editar la valoración", name = "id", required = true)
     @JsonView(View.PlatoView.PlatoDetailView.class)
     @PutMapping("/rate/{id}")
     public PlatoResponseDTO changeRating(@AuthenticationPrincipal User loggedUser, @PathVariable UUID id, @Valid @RequestBody RateRequestDTO rateDTO){

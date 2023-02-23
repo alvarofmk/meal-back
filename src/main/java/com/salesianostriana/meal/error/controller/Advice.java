@@ -33,7 +33,6 @@ import java.time.LocalDateTime;
 public class Advice extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler({SecurityException.class})
-    @ResponseStatus(HttpStatus.FORBIDDEN)
     public ResponseEntity<?> handleInvalidSearch(SecurityException exception, WebRequest request){
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Error.builder()
                 .status(HttpStatus.FORBIDDEN)
@@ -44,7 +43,6 @@ public class Advice extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler({BadRequestException.class})
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<?> handleInvalidSearch(BadRequestException exception, WebRequest request){
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Error.builder()
                 .status(HttpStatus.BAD_REQUEST)
@@ -55,7 +53,6 @@ public class Advice extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(EntityNotFoundException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
     public ResponseEntity<?> handleNotFound(EntityNotFoundException exception, WebRequest request){
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Error.builder()
                         .status(HttpStatus.NOT_FOUND)
@@ -66,7 +63,6 @@ public class Advice extends ResponseEntityExceptionHandler {
     }
 
     @Override
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Error.builder()
                 .status(HttpStatus.BAD_REQUEST)
@@ -78,7 +74,6 @@ public class Advice extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler({ AuthenticationException.class })
-    @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public ResponseEntity<?> handleAuthenticationException(AuthenticationException ex, HttpServletRequest request) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                 .header("WWW-Authenticate", "Bearer")
@@ -87,7 +82,6 @@ public class Advice extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler({ AccessDeniedException.class })
-    @ResponseStatus(HttpStatus.FORBIDDEN)
     public ResponseEntity<?> handleAccessDeniedException(AccessDeniedException ex, HttpServletRequest request) {
         return ResponseEntity.status(HttpStatus.FORBIDDEN)
                 .body(ErrorMessage.of(HttpStatus.FORBIDDEN, ex.getMessage(), request.getRequestURI()));
@@ -96,14 +90,12 @@ public class Advice extends ResponseEntityExceptionHandler {
 
 
     @ExceptionHandler({JwtTokenException.class})
-    @ResponseStatus(HttpStatus.FORBIDDEN)
     public ResponseEntity<?> handleTokenException(JwtTokenException ex, HttpServletRequest request) {
         return ResponseEntity.status(HttpStatus.FORBIDDEN)
                 .body(ErrorMessage.of(HttpStatus.FORBIDDEN, ex.getMessage(), request.getRequestURI()));
     }
 
     @ExceptionHandler({UsernameNotFoundException.class})
-    @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public ResponseEntity<?> handleUserNotExistsException(UsernameNotFoundException ex, HttpServletRequest request) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                 .body(ErrorMessage.of(
